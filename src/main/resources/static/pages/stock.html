@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+
+    <el-row>
+
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+            <el-col :span="8">
+                <el-alert
+                        type="success"
+                        :closable="false"
+                        center>
+                    <h3> 智慧型股票投资分析系统</h3>
+                </el-alert>
+
+            </el-col>
+        <el-col :span="5"><div class="grid-content bg-purple">
+            <el-menu-item index="1" @click.native="getAll()">股票列表</el-menu-item>
+        </div></el-col>
+        <el-col :span="5"><div class="grid-content bg-purple-light">
+                <el-menu-item index="2" @click.native="getMyFav()">我的自选</el-menu-item>
+        </div></el-col>
+        <el-col :span="4"><div class="grid-content bg-purple">
+            <el-menu-item index="3">股票推荐</el-menu-item>
+        </div></el-col>
+
+        <el-col :span="2">
+        <div class="grid-content bg-purple-light" style="float: right">
+            <el-dropdown>
+                <el-button type="primary">
+                    欢迎你：{{loginUser}}<i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="confirmLogOut()">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+
+        </div>
+        </el-col>
+        </el-menu>
+
+    </el-row>
+    <div style="margin: 5px">
+        <el-row >
+
+            <el-col :span="5" :push="8">
+
+                <el-input
+                        placeholder="请输入内容"
+                        v-model="input"
+                        clearable>
+
+                </el-input>
+
+            </el-col>
+            <div style="margin-left: 10px">
+                <el-col :span="5" :push="9">
+
+                    <el-button type="primary" icon="el-icon-search" @click="searchData('123')">搜索股票</el-button>
+
+                </el-col>
+
+            </div>
+
+
+        </el-row>
+    </div>
+
+
+        <el-tabs :tab-position="tabPosition" :stretch="true" v-model="activeName" style="height: 100%;" @tab-click="handleClick" >
+            <el-tab-pane label="股票列表"  name="stockList">
+                <el-table size="small" current-row-key="id" :data="stockList" stripe highlight-current-row>
+
+                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+
+                    <el-table-column prop="code" label="股票代码" align="center"></el-table-column>
+
+                    <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+
+                    <el-table-column prop="area" label="所属地区" align="center"></el-table-column>
+
+                    <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
+
+                    <el-table-column label="" align="center">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
+                            <el-button type="success" @click="addFav(scope.row)" icon="el-icon-star-off" circle></el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination-container" style="text-align: center">
+
+                    <el-pagination
+                            class="pagiantion"
+
+                            @current-change="handleCurrentChange"
+
+                            :current-page="pagination.currentPage"
+
+                            :page-size="pagination.pageSize"
+
+                            layout="total, prev, pager, next, jumper"
+
+                            :total="pagination.total">
+
+                    </el-pagination>
+
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="查询列表" v-if="hideSearch" name="searchList">
+                                <el-table size="small" current-row-key="id" :data="searchList" stripe highlight-current-row>
+
+                                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+
+                                    <el-table-column prop="code" label="股票代码" align="center"></el-table-column>
+
+                                    <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+
+                                    <el-table-column prop="area" label="所属地区" align="center"></el-table-column>
+
+                                    <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
+
+                                    <el-table-column label="详情" align="center">
+
+                                        <template slot-scope="scope">
+
+                                            <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
+                                            <el-button type="success" @click="addFav(scope.row)" icon="el-icon-star-off" circle></el-button>
+
+                                        </template>
+
+                                    </el-table-column>
+
+                                </el-table>
+                                <div class="pagination-container" style="text-align: center">
+
+                                    <el-pagination
+                                            class="pagiantion"
+
+                                            @current-change="handleSearchCurrentChange"
+
+                                            :current-page="pagination1.currentPage"
+
+                                            :page-size="pagination1.pageSize"
+
+                                            layout="total, prev, pager, next, jumper"
+
+                                            :total="pagination1.total">
+
+                                    </el-pagination>
+
+                                </div>
+                            </el-tab-pane>
+            <el-tab-pane label="股票详情" v-if="stockData" name="dataList"
+                         v-loading="loading"
+                         element-loading-text="正在拼命请求服务器中，请稍后。。。">
+                <el-button type="primary"  @click="updateDataById()">更新数据到今日</el-button>
+                <el-button type="success" @click="addFav()" icon="el-icon-star-off" circle></el-button>
+                <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+
+                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+                    <el-table-column prop="tradeDate" label="交易日期" align="center"
+                                     sortable
+                                     :default-sort = "{prop: 'date', order: 'descending'}"
+                    ></el-table-column>
+                    <el-table-column prop="open" label="开盘价" align="center"></el-table-column>
+                    <el-table-column prop="high" label="当日最高" align="center"></el-table-column>
+                    <el-table-column prop="low" label="当日最低" align="center"></el-table-column>
+                    <el-table-column prop="close" label="收盘价" align="center"></el-table-column>
+                    <el-table-column prop="preClose" label="昨收价" align="center"></el-table-column>
+                    <el-table-column prop="changeAmount" label="涨跌额" align="center"></el-table-column>
+                    <el-table-column prop="pctChg" label="涨跌幅" align="center"></el-table-column>
+                    <el-table-column prop="vol" label="成交量（手）" align="center"></el-table-column>
+                    <el-table-column prop="amount" label="成交额（千元）" align="center"></el-table-column>
+
+                    <el-table-column label="查看K线" align="center">
+                        <template slot="header" slot-scope="scope">
+                            <span>{{stockInfo}}</span>
+
+                            <el-button type="primary" size="mini" @click="Kline()">K线图</el-button>
+
+                        </template>
+
+                    </el-table-column>
+
+                </el-table>
+                <div class="pagination-container" style="text-align: center">
+
+                    <el-pagination
+                            class="pagiantion"
+
+                            @current-change="handleDataCurrentChange"
+
+                            :current-page="pagination2.currentPage"
+
+                            :page-size="pagination2.pageSize"
+
+                            layout="total, prev, pager, next, jumper"
+
+                            :total="pagination2.total">
+
+                    </el-pagination>
+
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="K线" v-if="kline" name="Kline">
+                <div  style="height:500px; width:1000px" >
+                    <iframe  id="frame" :src="frUrl" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
+
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="收藏列表" v-if="fav" name="favStockList">
+                <el-table size="small" current-row-key="id" :data="favStockList" stripe highlight-current-row>
+
+                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+
+                    <el-table-column prop="code" label="股票代码" align="center"></el-table-column>
+
+                    <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+
+                    <el-table-column prop="area" label="所属地区" align="center"></el-table-column>
+
+                    <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
+
+                    <el-table-column label="详情" align="center">
+
+                        <template slot-scope="scope">
+
+                            <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
+                            <!-- 每一个popover需要传入对应的ref才能作用！！！！-->
+                           <el-popover
+                                    :ref="'popover-'+scope.$index"
+                                    placement="left"
+                                    width="160"
+                                    >
+                                <p>确定取消收藏 {{favStockList[scope.$index].code}} {{favStockList[scope.$index].name}} 吗？</p>
+                                <p>该操作不可撤回！！</p>
+                                <div style="text-align: right; margin: 0">
+                                    <el-button size="primary" type="mini" @click="closePopover(scope.$index)">取消</el-button>
+                                    <el-button type="danger" size="mini" @click="delFav(scope.row,scope.$index)">确定</el-button>
+                                </div>
+                                <el-button type="danger" slot="reference" @click="openPopover(scope.$index)" icon="el-icon-delete" circle></el-button>
+                            </el-popover>
+
+
+                        </template>
+
+                    </el-table-column>
+
+                </el-table>
+            </el-tab-pane>
+        </el-tabs>
+
+
+
+</div>
+
+</body>
+<!-- import Vue before Element -->
+<script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        // data:{
+        //     //当前页要展示的列表数据
+        // },
+        created() {
+            //调用查询全部数据的操作
+
+            this.getUser();
+            this.getAll();
+        },
+        data: function() {
+            return { visible: false }
+        },
+        methods: {
+            openPopover(index){
+                console.log(index);
+                this.$refs['popover-'+index].doShow;
+            },
+            closePopover(index){
+                console.log(index);
+                this.$refs['popover-'+index].doClose();
+            },
+            getMyFav(){
+                console.log(this.loginUser);
+                axios.get("/user/myFav/"+this.loginUser).then((res)=>{
+                    this.fav=true;
+                    this.favStockList=res.data.data;
+                    this.activeName='favStockList';
+                });
+            },
+            errorMsg(title,msg){
+                this.$notify({
+                    title: title,
+                    message: msg,
+                    type: 'error'
+                });
+            },
+            successMsg(title,msg){
+                this.$notify({
+                    title: title,
+                    message: msg,
+                    type: 'success',
+                    duration: 1000,
+                });
+            },
+            getUser(){
+                axios.get("/user/success").then((res)=>{
+                    console.log(res.data+"...");
+                    if (res.data===""){
+                        this.errorMsg('未登录','请登录后使用，谢谢');
+                        setTimeout(() =>{
+                            window.location.href="login.html";
+                        },2000);
+                    }else{
+                        this.$notify({
+                            title: '登录成功',
+                            message: '欢迎您: '+res.data,
+                            type: 'success',
+                        });
+                        this.loginUser=res.data;
+                    }
+                });
+            },
+            addFav(row){
+                if (row==null){
+                    axios.get("/user/addFav/"+this.loginUser+"/"+this.stockCode).then((res)=>{
+                        // console.log(res.data+"...");
+                        this.successMsg('',res.data.data);
+                    });
+                }else{
+                    axios.get("/user/addFav/"+this.loginUser+"/"+row.code).then((res)=>{
+                        // console.log(res.data+"...");
+                        this.successMsg('',res.data.data);
+                    });
+                }
+
+            },
+            delFav(row,index){
+
+                axios.get("/user/delFav/"+this.loginUser+"/"+row.code).then((res)=>{
+                    // console.log(res.data+"...");
+                    this.successMsg('',res.data.data);
+                    this.getMyFav();
+                    console.log(index);
+                    this.closePopover(index);
+                });
+            },
+            Kline(){
+                this.loading=true;
+                axios.get("/stock/kline/"+this.stockCode).then((res)=>{
+                    setTimeout(() =>{
+                        this.activeName='Kline';
+                        this.kline=true;
+                        this.openMsg("加载成功","success");
+                        this.frUrl="/"+this.stockName+"K线.html";
+                        this.loading=false;
+                    },2000);
+                });
+
+
+            },
+            getDataById(row){
+                this.stockData=true;
+                if (row!=null){
+                    axios.get("/stock/data/"+this.pagination2.currentPage+"/"+this.pagination2.pageSize+"/"+row.code).then((res)=>{
+                        console.log(res);
+                        this.dataList=res.data.data.records;
+                        this.pagination2.currentPage=res.data.data.current;
+                        this.pagination2.total=res.data.data.total
+                        console.log(res.data.data.total);
+                        this.activeName='dataList';
+                        this.openMsg("加载成功","success");
+                        this.stockInfo=row.name+' '+row.code;
+                        this.stockCode=row.code;
+                        this.stockName=row.name;
+                    });
+                }else if (row==null) {
+                    axios.get("/stock/data/" + this.pagination2.currentPage + "/" + this.pagination2.pageSize + "/" + this.stockCode).then((res) => {
+                        console.log(res);
+                        this.dataList = res.data.data.records;
+                        this.pagination2.currentPage = res.data.data.current;
+                        this.pagination2.total = res.data.data.total
+                        console.log(res.data.data.total);
+                        this.activeName = 'dataList';
+                        this.openMsg("加载成功","success");
+                        this.stockInfo = row.name + ' ' + row.code;
+                        this.stockCode = row.code;
+                        this.stockName = row.name;
+                    });
+                }
+            },
+            updateDataById(){
+                this.loading=true
+                axios.get("/stock/data/"+this.stockCode).then((res)=>{
+                    this.loading=false;
+                    axios.get("/stock/data/"+this.pagination2.currentPage+"/"+this.pagination2.pageSize+"/"+this.stockCode).then((res)=>{
+                        console.log(this.stockCode);
+                        this.dataList=res.data.data.records;
+                        this.pagination2.currentPage=res.data.data.current;
+                        this.pagination2.total=res.data.data.total
+                        this.activeName='dataList';
+                        this.openMsg("加载成功","success");
+                    });
+                });
+            },
+            confirmLogOut() {
+                this.$confirm('确认退出?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '退出成功!'
+                    });
+                    setTimeout(() =>{//延迟执行
+                        window.location.href="login.html";
+                    },500);
+
+                }).catch(() => {
+
+                });
+            },
+            handleChange(val) {
+                console.log(val);
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleCurrentChange(currentPage) {
+                //修改页码值为当前选中的页码值
+                this.pagination.currentPage = currentPage;
+                //执行查询
+                this.getAll();
+            },
+            handleSearchCurrentChange(currentPage) {
+                //修改页码值为当前选中的页码值
+                this.pagination1.currentPage = currentPage;
+                //执行查询
+                this.searchData();
+            },
+            handleDataCurrentChange(currentPage) {
+                //修改页码值为当前选中的页码值
+                this.pagination2.currentPage = currentPage;
+                //执行查询
+                this.getDataById();
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClick(tab, event) {
+                console.log(tab, event);
+                if (this.activeName=="favStockList"){
+                    this.getMyFav();
+                }
+            },
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            openMsg(msg,type) {
+                this.$message({
+                    message:msg,
+                    type: type,
+                    duration: '1000'
+                })
+
+            },
+
+            getAll() {
+                //组织参数，拼接url请求地址
+                // console.log(this.pagination.type);
+                // param = "?type="+this.pagination.type;
+                // param +="&name="+this.pagination.name;
+                // param +="&description="+this.pagination.description;
+                // console.log(param);
+                axios.get("/stock/list/"+this.pagination.currentPage+"/"+this.pagination.pageSize).then((res)=>{
+                    // this.pagination.pageSize = res.data.data.size;
+                    // this.pagination.currentPage = res.data.data.current;
+                    // this.pagination.total = res.data.data.total;
+                    //
+                    // this.dataList = res.data.data.records;
+                    console.log(res);
+                    this.activeName='stockList';
+                    this.stockList=res.data.data.records;
+                    this.pagination.currentPage=res.data.data.current;
+                    this.pagination.total=res.data.data.total
+                    console.log(res.data.data.total);
+                });
+        },
+            searchData(page) {
+                if (this.input==null){
+                    this.openMsg("请输入搜索的内容！","error");
+                }else {
+                    if (page!=null){
+                        this.pagination1.currentPage =1
+                    }
+
+                    axios.get("/stock/search/"+this.pagination1.currentPage+"/"+this.pagination1.pageSize+"/"+this.input).then((res)=>{
+                        console.log(res);
+                        this.searchList=res.data.data.records;
+                        this.pagination1.currentPage=res.data.data.current;
+                        this.pagination1.total=res.data.data.total;
+                        this.activeName='searchList';
+                        console.log(res.data.data.total);
+                        this.openMsg("加载成功","success");
+                        this.hideSearch=true;
+                        this.input=null;
+                    });
+                }
+
+            },
+
+        },
+        data() {
+            const item = {
+            };
+            return {
+                hideSearch: false,
+                fav: false,
+                kline: false,
+                stockData: false,
+                stream:'',
+                // visible1: false,
+                loginUser:'null',
+                stockName:'',
+                frUrl:'',
+                stockCode:'',
+                stockInfo:'',
+                loading: 'false',
+                tabPosition: 'left',
+                activeNames: ['1'],
+                input: null,
+                favStockList: [],
+                stockList: [],
+                searchList: [],
+                dataList: [],
+                activeIndex: '1',
+                activeIndex2: '1',
+                activeName: 'stockList',
+                tableData: Array(20).fill(item),
+                pagination: {//分页相关模型数据
+                    currentPage:1 ,//当前页码
+                    pageSize:13,//每页显示的记录数
+                    total:0,//总记录数
+                    type: "",
+                    name: "",
+                    description: ""
+                },
+                pagination1: {//分页相关模型数据
+                    currentPage:1 ,//当前页码
+                    pageSize:13,//每页显示的记录数
+                    total:0,//总记录数
+                    type: "",
+                    name: "",
+                    description: ""
+                },
+                pagination2: {//分页相关模型数据
+                    currentPage:1 ,//当前页码
+                    pageSize:13,//每页显示的记录数
+                    total:0,//总记录数
+                    type: "",
+                    name: "",
+                    description: ""
+                },
+
+            }
+        },
+
+
+    })
+</script>
+
+</html>

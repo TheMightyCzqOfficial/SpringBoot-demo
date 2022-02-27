@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/stockdemo1?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    username: root
+    password: chen2000624.
+  thymeleaf:
+    cache: false
+  devtools:
+    restart:
+      additional-paths: resources/**,static/pages/KLine,templates/**,C://Users//CZQ//IdeaProjects//springbootdemo01//src//main//resources//static//pages//KLine
+      enabled: true
+      trigger-file: resources/trigger-file.txt
+  resources:
+    static-locations: file:D://kline,file:C://Users//CZQ//IdeaProjects//springbootdemo01//src//main//resources//static
+  mvc:
+    static-path-pattern: /**
+
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix:
+      id-type: auto
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+
+

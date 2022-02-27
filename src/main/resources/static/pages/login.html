@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 页面meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>智慧型股票投资分析系统</title>
+
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+
+<!--    &lt;!&ndash;引入 element-ui 的样式，&ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+<!--    &lt;!&ndash; 必须先引入vue，  后使用element-ui &ndash;&gt;-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>-->
+<!--    &lt;!&ndash; 引入element 的组件库&ndash;&gt;-->
+<!--    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <style>
+
+
+    </style>
+
+</head>
+<body style="background: #dea8a4">
+
+<div id="app" style="background: #dea8a4;margin: 200px">
+    <el-dialog
+            title="更新信息"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose">
+        <span><el-timeline :reverse="false">
+    <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :timestamp="activity.timestamp">
+      {{activity.content}}
+    </el-timeline-item>
+  </el-timeline></span>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
+    <el-row style="margin: 200px;">
+        <el-col :span="9" :push="6"><div class="grid-content bg-purple">
+
+            <el-card class="box-card" style="width: 680px;margin: 0 auto " >
+                <el-button type="primary" @click="dialogVisible = true" size="mini">版本信息</el-button>
+                        <div class="text item">
+                            <el-row>
+                                <el-col :span="8" :push="7"><div class="grid-content bg-purple" style="text-align: center">
+
+                                    <h6 ><el-alert
+                                            title="智慧型股票推荐系统-登录"
+                                            type="error"
+                                            :closable="false">
+                                    </el-alert></h6>
+
+                                </div></el-col>
+                            </el-row>
+                        </div>
+
+                <el-collapse v-model="activeName" @change="handleChange" accordion style="margin-top: 5px">
+                    <el-collapse-item title="登录" name="1">
+                        <el-form ref="regform" :model="form" label-width="60px">
+                            <el-row>
+                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+                                    <el-form-item label="用户名">
+                                        <el-input  v-model="form.userName"></el-input>
+                                    </el-form-item>
+
+                                </div></el-col>
+
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+
+                                    <el-form-item label="密码">
+                                        <el-input type="password" v-model="form.password"></el-input>
+                                        </el-select>
+                                    </el-form-item>
+                                </div></el-col>
+
+                            </el-row>
+                            <el-row>
+                                <el-col :span="7" :push="6"><div class="grid-content bg-purple">
+
+                                    <el-form-item label="验证码">
+                                        <el-input v-model="form.code"></el-input>
+                                    </el-form-item>
+
+                                </div></el-col>
+                                <el-col :span="2" :push="6"><div class="grid-content bg-purple" style="margin-left: 10px">
+                                    <a href="javascript:void(0)"><img @click="refresh1()" src="/user/checkCode/login/123" title="看不清点击刷新" ref="logCode"/></a>
+                                </div></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="3" :push="9"><div class="grid-content bg-purple">
+                                    <el-button type="success" @click="onSubmit()" icon="el-icon-circle-check">立即登录</el-button>
+                                </div></el-col>
+                            </el-row>
+                            </el-form-item>
+                        </el-form>
+                    </el-collapse-item>
+                    <el-collapse-item title="注册" name="2">
+
+                        <el-form ref="regform" :model="form" label-width="60px">
+                            <el-row>
+                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+                                    <el-form-item label="用户名">
+                                        <el-input  v-model="regform.userName"></el-input>
+                                    </el-form-item>
+
+                                </div></el-col>
+
+                            </el-row>
+                            <el-row>
+                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+
+                                    <el-form-item label="密码">
+                                        <el-input type="password" v-model="regform.password"></el-input>
+                                        </el-select>
+                                    </el-form-item>
+                                </div></el-col>
+
+                            </el-row>
+                            <el-row>
+                                <el-col :span="7" :push="6"><div class="grid-content bg-purple">
+
+                                    <el-form-item label="验证码">
+                                        <el-input v-model="regform.code"></el-input>
+                                    </el-form-item>
+
+                                </div></el-col>
+                                <el-col :span="2" :push="6"><div class="grid-content bg-purple" style="margin-left: 10px">
+                                    <a href="javascript:void(0)"><img @click="refresh2()" src="/user/checkCode/register/123" title="看不清点击刷新" ref="regCode"/></a>
+                                </div></el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="3" :push="9"><div class="grid-content bg-purple">
+                                    <el-button @click="regSubmit()" type="primary"  icon="el-icon-circle-plus-outline" >确认注册</el-button>
+                                </div></el-col>
+                            </el-row>
+                            </el-form-item>
+                        </el-form>
+                    </el-collapse-item>
+                </el-collapse>
+
+
+
+
+
+            </el-card>
+        </div></el-col>
+
+    </el-row>
+
+
+    <style>
+        .text {
+            font-size: 14px;
+        }
+
+        .item {
+            padding: 18px 0;
+        }
+
+        .box-card {
+            width: 48px;
+        }
+    </style>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+
+        },
+        created(){
+            this.tips()
+        },
+        data() {
+            return {
+                dialogVisible: false,
+                activeName:'1',
+                drawer: false,
+                direction: 'rtl',
+                form: {
+                    userName: null,
+                    password: null,
+                    code: null,
+                },
+                regform: {
+                    userName: null,
+                    password: null,
+                    code: null,
+                },
+                reverse: true,
+                activities: [{
+                    content: '添加了基础股票池、查看股票详细信息、模糊搜索功能',
+                    timestamp: '2022-02-20'
+                }, {
+                    content: '添加了用户信息、可进行注册，登录，收藏股票',
+                    timestamp: '2022-02-22'
+                }, {
+                    content: '美化界面与交互逻辑、输入格式检测等细节',
+                    timestamp: '2020-02-24'
+                }, {
+                    content: '增加实时请求动态K线图',
+                    timestamp: '2020-02-26'
+                }],
+
+            };
+        },
+        methods: {
+            tips() {
+                this.$notify({
+                    title: '友情提醒',
+                    message: '投资有风险，入市需谨慎！',
+                    type: 'warning'
+                });
+            },
+            handleChange(val) {
+                console.log(val);
+            },
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
+            refresh2(){
+                let regCode = this.$refs.regCode;
+                var time=new Date().getTime();
+                regCode.src="/user/checkCode/register/"+time
+            },
+            refresh1(){
+                let logCode = this.$refs.logCode;
+                var time=new Date().getTime();
+                logCode.src="/user/checkCode/login/"+time
+            },
+            openMsg() {
+                this.$message({
+                    message: '注册成功！',
+                    type: 'success'
+                });
+            },
+            wrongCode1() {
+                this.$message({
+                    message: '验证码错误！',
+                    type: 'error'
+                });
+                this.refresh1();
+            },
+            wrongCode2() {
+                this.$message({
+                    message: '验证码错误！',
+                    type: 'error'
+                });
+                this.refresh2();
+            },
+            wrongNP() {
+                this.$message({
+                    message: '用户名或密码错误！',
+                    type: 'error'
+                });
+            },
+            alreadyExist() {
+                this.$message({
+                    message: '用户名已存在！',
+                    type: 'error'
+                });
+            },
+            noInput() {
+                this.$message({
+                    message: '你似乎漏了什么没输入哦！',
+                    type: 'error'
+                });
+            },
+
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {});
+            },
+            onSubmit() {
+                console.log(this.form.userName)
+                if (this.form.userName==null||this.form.password==null||this.form.code==null){
+                    this.noInput();
+                }else{
+                    console.log("/user/login/"+this.form.userName+"/"+this.form.password+"/"+this.form.code);
+                    axios.post("/user/login/"+this.form.userName+"/"+this.form.password+"/"+this.form.code).then((res)=>{
+                        if(res.data.data==="code"){
+                            this.wrongCode1();
+                        }else if (res.data.data==="wrong"){
+                            this.wrongNP();
+                        }else{
+                            this.$notify({
+                                title: '',
+                                message: '登录成功 '+this.form.userName,
+                                type: 'success'
+                            });
+                            setTimeout(() =>{
+                                window.location.href="/pages/stock.html";
+                            },2000);
+
+                        }
+
+
+                    });
+                }
+
+            },
+            regSubmit() {
+                console.log(this.regform.userName)
+                if (this.regform.userName==null||this.regform.password==null||this.regform.code==null){
+                    this.noInput();
+                }else if(this.regform.userName.length<3||this.regform.password.length<6){
+                    this.$message({
+                        message: '用户名长度（大于3）或密码长度（大于6）不规范',
+                        type: 'error'
+                    });
+                }else{
+                    // console.log("/user/login/"+this.form.userName+"/"+this.form.password+"/"+this.form.code);
+                    axios.post("/user/register/"+this.regform.userName+"/"+this.regform.password+"/"+this.regform.code).then((res)=>{
+                        if(res.data.data==="code"){
+                            this.wrongCode2();
+                        }else if (res.data.data==="用户名已存在"){
+                            this.alreadyExist();
+                        }else{
+                            this.$message({
+                                message: '注册成功！',
+                                type: 'success'
+                            });
+                            this.activeName='1';
+                            this.form.userName=this.regform.userName;
+                            this.form.password=this.regform.password;
+                            this.regform.userName=null;
+                            this.regform.password=null;
+                        }
+
+
+                    });
+                }
+
+            }
+        }
+    })
+
+</script>
+
+<!---->
+
+</body>
+</html>
