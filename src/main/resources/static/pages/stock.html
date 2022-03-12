@@ -5,21 +5,23 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 </head>
-<body>
-<div id="app">
-
+<body >
+<div id="app" >
     <el-row>
+        <el-col :span="24">
+            <el-alert
+                    type="success"
+                    :closable="false"
+                    center>
+                <h3> 智慧型股票投资分析系统</h3>
+            </el-alert>
 
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-            <el-col :span="8">
-                <el-alert
-                        type="success"
-                        :closable="false"
-                        center>
-                    <h3> 智慧型股票投资分析系统</h3>
-                </el-alert>
+        </el-col>
+    </el-row>
 
-            </el-col>
+
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" >
+            <el-row style="margin-top: 5px;margin-left: 700px">
         <el-col :span="5"><div class="grid-content bg-purple">
             <el-menu-item index="1" @click.native="getAll()">股票列表</el-menu-item>
         </div></el-col>
@@ -30,7 +32,7 @@
             <el-menu-item index="3">股票推荐</el-menu-item>
         </div></el-col>
 
-        <el-col :span="2">
+        <el-col :span="2" :push="8">
         <div class="grid-content bg-purple-light" style="float: right">
             <el-dropdown>
                 <el-button type="primary">
@@ -43,9 +45,10 @@
 
         </div>
         </el-col>
+            </el-row>
         </el-menu>
 
-    </el-row>
+
     <div style="margin: 5px">
         <el-row >
 
@@ -516,7 +519,7 @@
                         console.log(res.data.data.total);
                         this.openMsg("加载成功","success");
                         this.hideSearch=true;
-                        this.input=null;
+                        // this.input=null;
                     });
                 }
 

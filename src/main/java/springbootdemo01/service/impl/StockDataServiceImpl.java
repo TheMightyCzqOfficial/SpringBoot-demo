@@ -59,7 +59,8 @@ public class StockDataServiceImpl implements StockDataService {
     public String getDataByCode(String code) {
         String start="20210101";
         Date date=new Date();
-        String today = new SimpleDateFormat("yyyymmdd").format(date);
+        String today = new SimpleDateFormat("yyyyMMdd").format(date);
+        System.out.println("最新日期："+today);
         System.out.println("开始执行python ");
         Process proc;
         try {

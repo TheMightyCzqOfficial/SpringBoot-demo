@@ -67,5 +67,10 @@ public class mybatisplusTest {
         user.setPassword("pwd");
         userMapper.insert(user);
     }
+    @Test
+    void aadsdad(){
+
+        System.out.println(~15);
+    }
     }
 
