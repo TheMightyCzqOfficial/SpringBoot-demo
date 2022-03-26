@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.sql.Date;
 @TableName("stockdata")
 public class Data {
-    private int id;
+    private String pk;
     private String code;
     private Date tradeDate;
     private String open;
@@ -21,7 +21,7 @@ public class Data {
     @Override
     public String toString() {
         return "Data{" +
-                "id=" + id +
+                "pk='" + pk + '\'' +
                 ", code='" + code + '\'' +
                 ", tradeDate=" + tradeDate +
                 ", open='" + open + '\'' +
@@ -36,12 +36,12 @@ public class Data {
                 '}';
     }
 
-    public int getId() {
-        return id;
+    public String getPk() {
+        return pk;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPk(String pk) {
+        this.pk = pk;
     }
 
     public String getCode() {

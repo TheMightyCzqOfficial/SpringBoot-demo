@@ -19,4 +19,13 @@ public class UserStockServiceImpl implements UserStockService {
         List<UserStock> list = stockMapper.selectList(qw);
         return list;
     }
+
+    @Override
+    public int countByUsername(String username) {
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("username",username);
+        Integer count = stockMapper.selectCount(qw);
+        System.out.println(count);
+        return count;
+    }
 }

@@ -5,80 +5,87 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 </head>
+<style>
+    .app{
+        width: 100%;
+        height: 100%;
+
+    }
+    .el-scrollbar__wrap{overflow-x: hidden;}
+
+     .el-table .warning-row {
+         background: #c0ffc9;
+     }
+
+    .el-table .success-row {
+        background: #ff8f81;
+    }
+
+</style>
 <body >
-<div id="app" >
-    <el-row>
-        <el-col :span="24">
-            <el-alert
-                    type="success"
-                    :closable="false"
-                    center>
-                <h3> 智慧型股票投资分析系统</h3>
-            </el-alert>
 
-        </el-col>
-    </el-row>
+    <div id="app" class="app">
+        <!--        导航栏-->
+        <el-row style="margin-bottom: 10px">
+            <el-col :span="24">
+                <div>
+                    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" style="float: bottom">
+                            <a href="stock.html"><img src="/img/logo.jpg" style="width: 200px;height: 60px;float: left"></a>
 
 
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" >
-            <el-row style="margin-top: 5px;margin-left: 700px">
-        <el-col :span="5"><div class="grid-content bg-purple">
-            <el-menu-item index="1" @click.native="getAll()">股票列表</el-menu-item>
-        </div></el-col>
-        <el-col :span="5"><div class="grid-content bg-purple-light">
-                <el-menu-item index="2" @click.native="getMyFav()">我的自选</el-menu-item>
-        </div></el-col>
-        <el-col :span="4"><div class="grid-content bg-purple">
-            <el-menu-item index="3">股票推荐</el-menu-item>
-        </div></el-col>
-
-        <el-col :span="2" :push="8">
-        <div class="grid-content bg-purple-light" style="float: right">
-            <el-dropdown>
-                <el-button type="primary">
-                    欢迎你：{{loginUser}}<i class="el-icon-arrow-down el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="confirmLogOut()">退出登录</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-
-        </div>
-        </el-col>
-            </el-row>
-        </el-menu>
 
 
-    <div style="margin: 5px">
-        <el-row >
 
-            <el-col :span="5" :push="8">
+                            <el-menu-item style="margin-left: 200px">
+                                <div class="grid-content bg-purple-dark" style="text-align: center">
+                                        <el-input style="width: 200px"
+                                                  placeholder="搜索股票(代码/名称)"
+                                                  v-model="input"
+                                                  size="mini"
+                                                  clearable>
+                                    </el-input>
+                                        <el-button type="primary" @click="searchData('123')" size="mini" >搜索</el-button>
+                                    </div>
 
-                <el-input
-                        placeholder="请输入内容"
-                        v-model="input"
-                        clearable>
 
-                </el-input>
+                            </el-menu-item>
 
+
+
+
+                            <el-menu-item index="1" @click.native="getAll()" style="margin-left: 350px">股票列表</el-menu-item>
+
+                            <el-menu-item index="2" @click.native="getMyFav()" style="margin-left: 50px">我的自选</el-menu-item>
+
+                            <el-menu-item index="3" style="margin-left: 50px">股票推荐</el-menu-item>
+
+                        <div  style="float: right">
+                            <el-dropdown>
+                                <el-button type="primary">
+                                    欢迎你：{{loginUser}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item @click.native="confirmLogOut()">退出登录</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+
+                        </div>
+
+
+                    </el-menu>
+                </div>
             </el-col>
-            <div style="margin-left: 10px">
-                <el-col :span="5" :push="9">
-
-                    <el-button type="primary" icon="el-icon-search" @click="searchData('123')">搜索股票</el-button>
-
-                </el-col>
-
-            </div>
-
-
         </el-row>
-    </div>
 
 
-        <el-tabs :tab-position="tabPosition" :stretch="true" v-model="activeName" style="height: 100%;" @tab-click="handleClick" >
+
+
+
+
+        <el-tabs :tab-position="tabPosition" :stretch="true" v-model="activeName" style="height: 100%" @tab-click="handleClick" >
+
             <el-tab-pane label="股票列表"  name="stockList">
-                <el-table size="small" current-row-key="id" :data="stockList" stripe highlight-current-row>
+                <el-table size="small" current-row-key="id" :data="stockList"  stripe highlight-current-row>
 
                     <el-table-column type="index" align="center" label="序号"></el-table-column>
 
@@ -97,7 +104,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="pagination-container" style="text-align: center">
+                <div class="pagination-container" style="text-align: center;background: #f3f9ff" >
 
                     <el-pagination
                             class="pagiantion"
@@ -110,7 +117,7 @@
 
                             layout="total, prev, pager, next, jumper"
 
-                            :total="pagination.total">
+                            :total="pagination.total" >
 
                     </el-pagination>
 
@@ -162,10 +169,23 @@
                             </el-tab-pane>
             <el-tab-pane label="股票详情" v-if="stockData" name="dataList"
                          v-loading="loading"
-                         element-loading-text="正在拼命请求服务器中，请稍后。。。">
-                <el-button type="primary"  @click="updateDataById()">更新数据到今日</el-button>
+                         element-loading-text="数据加载中。。">
+                <el-dropdown>
+                    <el-button type="primary">
+                        更新数据<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item @click.native="updateDataById('half')">更新半年以内</el-dropdown-item>
+                        <el-dropdown-item @click.native="updateDataById('one')">更新1年以内</el-dropdown-item>
+                        <el-dropdown-item @click.native="updateDataById('five')">更新5年以内</el-dropdown-item>
+                        <el-dropdown-item @click.native="updateDataById('ten')">更新10年以内</el-dropdown-item>
+
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <el-button type="primary"  @click="Kline()">查看K线图</el-button>
                 <el-button type="success" @click="addFav()" icon="el-icon-star-off" circle></el-button>
-                <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                <el-divider content-position="left">{{stockInfo}}</el-divider>
+                <el-table size="small" current-row-key="id" :data="dataList"  border  highlight-current-row :row-class-name="tableRowClassName">
 
                     <el-table-column type="index" align="center" label="序号"></el-table-column>
                     <el-table-column prop="tradeDate" label="交易日期" align="center"
@@ -178,20 +198,9 @@
                     <el-table-column prop="close" label="收盘价" align="center"></el-table-column>
                     <el-table-column prop="preClose" label="昨收价" align="center"></el-table-column>
                     <el-table-column prop="changeAmount" label="涨跌额" align="center"></el-table-column>
-                    <el-table-column prop="pctChg" label="涨跌幅" align="center"></el-table-column>
+                    <el-table-column prop="pctChg" label="涨跌幅(点)" align="center"></el-table-column>
                     <el-table-column prop="vol" label="成交量（手）" align="center"></el-table-column>
                     <el-table-column prop="amount" label="成交额（千元）" align="center"></el-table-column>
-
-                    <el-table-column label="查看K线" align="center">
-                        <template slot="header" slot-scope="scope">
-                            <span>{{stockInfo}}</span>
-
-                            <el-button type="primary" size="mini" @click="Kline()">K线图</el-button>
-
-                        </template>
-
-                    </el-table-column>
-
                 </el-table>
                 <div class="pagination-container" style="text-align: center">
 
@@ -219,44 +228,160 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="收藏列表" v-if="fav" name="favStockList">
-                <el-table size="small" current-row-key="id" :data="favStockList" stripe highlight-current-row>
 
-                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+<!--                    <el-scrollbar style="height:100%;">-->
+<!--                        <ul v-for="item in favStockList" :key="item">-->
 
-                    <el-table-column prop="code" label="股票代码" align="center"></el-table-column>
+<!--                            <li>-->
+<!--                                <el-link :underline="false" @click="getDataByIdOnFav(item.code,item.name)">{{item.code}}&nbsp;{{item.name}}</el-link></li>-->
 
-                    <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+<!--                        </ul>-->
+<!--                    </el-scrollbar>-->
 
-                    <el-table-column prop="area" label="所属地区" align="center"></el-table-column>
 
-                    <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
+                <el-row :gutter="10">
+                    <el-col :span="8"><div ><el-table style="width: 800px" size="small" current-row-key="id" :data="favStockList" height="800"  highlight-current-row
+                                                      >
 
-                    <el-table-column label="详情" align="center">
+                        <el-table-column type="index" align="center" label="序号"></el-table-column>
 
-                        <template slot-scope="scope">
+                        <el-table-column prop="code" label="股票代码" align="center" sortable :default-sort = "{prop: 'code', order: 'descending'}"></el-table-column>
 
-                            <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
-                            <!-- 每一个popover需要传入对应的ref才能作用！！！！-->
-                           <el-popover
-                                    :ref="'popover-'+scope.$index"
-                                    placement="left"
-                                    width="160"
-                                    >
-                                <p>确定取消收藏 {{favStockList[scope.$index].code}} {{favStockList[scope.$index].name}} 吗？</p>
-                                <p>该操作不可撤回！！</p>
-                                <div style="text-align: right; margin: 0">
-                                    <el-button size="primary" type="mini" @click="closePopover(scope.$index)">取消</el-button>
-                                    <el-button type="danger" size="mini" @click="delFav(scope.row,scope.$index)">确定</el-button>
+                        <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+
+                        <el-table-column prop="area" label="所属地区" align="center"></el-table-column>
+
+                        <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
+
+                        <el-table-column label="详情" align="center">
+
+                            <template slot-scope="scope">
+
+                                <el-button type="primary" size="mini" @click="getDataByIdOnFav(scope.row)">股票详情</el-button>
+                                <!-- 每一个popover需要传入对应的ref才能作用！！！！-->
+                                <el-popover
+                                        :ref="'popover-'+scope.$index"
+                                        placement="left"
+                                        width="160"
+                                >
+                                    <p>确定取消收藏吗？</p>
+                                    <p>该操作不可撤回！！</p>
+                                    <div style="text-align: right; margin: 0">
+                                        <el-button size="primary" type="mini" @click="closePopover(scope.$index)">取消</el-button>
+                                        <el-button type="danger" size="mini" @click="delFav(scope.row,scope.$index)">确定</el-button>
+                                    </div>
+                                    <el-button type="danger" slot="reference" @click="openPopover(scope.$index)" icon="el-icon-delete" circle></el-button>
+                                </el-popover>
+
+
+                            </template>
+
+                        </el-table-column>
+
+                    </el-table>
+                        <el-card class="box-card" style="width: 350px;margin-top: 5px">
+                            <el-descriptions class="margin-top" title="收藏信息" :column="3" size="medium" border>
+                                <template slot="extra">
+                                </template>
+                                <el-descriptions-item>
+                                    <template slot="label">
+                                        <i class="el-icon-user"></i>
+                                        用户名
+                                    </template>
+                                    <el-tag size="medium">{{loginUser}}</el-tag>
+
+                                </el-descriptions-item>
+
+                                <el-descriptions-item>
+                                    <template slot="label">
+                                        <i class="el-icon-star-off"></i>
+                                        已收藏:
+                                    </template>
+                                    <el-tag size="medium">{{favCount}}</el-tag>
+                                </el-descriptions-item>
+                            </el-descriptions>
+                        </el-card></div></el-col>
+                    <el-col :span="16" >
+
+                        <div>
+
+                            <div v-loading="loadingOnFav" >
+                                <div style="font-size: 21px">
+                                <el-dropdown>
+                                    <el-button type="primary">
+                                        更新数据<i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item @click.native="updateDataByIdOnFav('half')">更新半年以内</el-dropdown-item>
+                                        <el-dropdown-item @click.native="updateDataByIdOnFav('one')">更新1年以内</el-dropdown-item>
+                                        <el-dropdown-item @click.native="updateDataByIdOnFav('five')">更新5年以内</el-dropdown-item>
+                                        <el-dropdown-item @click.native="updateDataByIdOnFav('ten')">更新10年以内</el-dropdown-item>
+
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+
+                                    <el-button  type="success" icon="el-icon-download" :loading="loadingDownload" @click="downloadToDesktop()">
+                                    下载数据
+                                </el-button>
+                                <el-popover
+                                        placement="right"
+                                        width="200"
+                                        trigger="hover"
+                                        :content="downloadContent">
+                                        <i class="el-icon-warning-outline" slot="reference" ></i>
+                                </el-popover>
+                                    <a id="downloadFile" :href="downloadUrl" :download="fileName" hidden></a>
                                 </div>
-                                <el-button type="danger" slot="reference" @click="openPopover(scope.$index)" icon="el-icon-delete" circle></el-button>
-                            </el-popover>
+                                <el-divider content-position="left">{{stockInfoOnFav}}</el-divider>
+                        <el-table size="small" current-row-key="id" :data="dataListOnFav"   border  highlight-current-row
+                                  :row-class-name="tableRowClassName">
+
+                            <el-table-column type="index" align="center" label="序号" ></el-table-column>
+                            <el-table-column prop="tradeDate" label="交易日期" align="center"
+                                             sortable
+                                             :default-sort = "{prop: 'date', order: 'descending'}"
+                            ></el-table-column>
+                            <el-table-column prop="open" label="开盘价" align="center"></el-table-column>
+                            <el-table-column prop="high" label="当日最高" align="center"></el-table-column>
+                            <el-table-column prop="low" label="当日最低" align="center"></el-table-column>
+                            <el-table-column prop="close" label="收盘价" align="center" sortable :default-sort = "{prop: 'close', order: 'descending'}"></el-table-column>
+                            <el-table-column prop="preClose" label="昨收价" align="center"></el-table-column>
+                            <el-table-column prop="changeAmount" label="涨跌额" align="center" ></el-table-column>
+                            <el-table-column prop="pctChg" label="涨跌幅(点)" align="center" sortable :default-sort = "{prop: 'pctChg', order: 'descending'}"></el-table-column>
+                            <el-table-column prop="vol" label="成交量（手）" align="center"></el-table-column>
+                            <el-table-column prop="amount" label="成交额（千元）" align="center"></el-table-column>
 
 
-                        </template>
 
-                    </el-table-column>
+                        </el-table>
+                        <div class="pagination-container" style="text-align: center">
 
-                </el-table>
+                            <el-pagination
+                                    class="pagiantion"
+
+                                    @current-change="handleFavCurrentChange"
+
+                                    :current-page="pagination3.currentPage"
+
+                                    :page-size="pagination3.pageSize"
+
+                                    layout="total, prev, pager, next, jumper"
+
+                                    :total="pagination3.total">
+
+                            </el-pagination>
+
+                        </div>
+
+                            </div>
+                        <div  style="height:600px; width:1500px" v-loading="loadingKlineOnFav">
+<!--                            <el-divider></el-divider>-->
+                            <iframe  id="frameOnFav" :src="frFavUrl" height="100%" width="100%" frameborder="0" scrolling="no" ></iframe>
+
+                        </div>
+                    </div></el-col>
+                </el-row>
+
             </el-tab-pane>
         </el-tabs>
 
@@ -299,7 +424,9 @@
                 console.log(this.loginUser);
                 axios.get("/user/myFav/"+this.loginUser).then((res)=>{
                     this.fav=true;
-                    this.favStockList=res.data.data;
+                    this.favStockList=res.data.data.favList;
+                    this.percentage=res.data.data.count/4670*100
+                    this.favCount=res.data.data.count
                     this.activeName='favStockList';
                 });
             },
@@ -374,20 +501,68 @@
 
 
             },
+            KlineOnFav(){
+                this.frFavUrl=null;
+                this.loadingKlineOnFav=true;
+                axios.get("/stock/kline/"+this.stockCodeOnFav).then((res)=>{
+                        setTimeout(() =>{
+                        this.openMsg("加载成功","success");
+                        this.frFavUrl="/"+this.stockNameOnFav+"K线.html";
+                        this.loadingKlineOnFav=false;
+                        },2000);
+                });
+
+
+            },
+            getDataByIdOnFav(row){
+                if (row!=null){
+
+                    axios.get("/stock/data/"+this.pagination3.currentPage+"/"+this.pagination3.pageSize+"/"+row.code).then((res)=>{
+                        this.loadingOnFav=false;
+                        console.log(res);
+                        this.dataListOnFav=res.data.data.records;
+                        this.pagination3.currentPage=res.data.data.current;
+                        this.pagination3.total=res.data.data.total
+                        this.stockInfoOnFav=row.name+' '+row.code;
+                        this.stockCodeOnFav=row.code;
+                        this.stockNameOnFav=row.name;
+                        this.updateDataByIdOnFav();
+                        console.log(this.dataListOnFav);
+                        if(this.dataListOnFav.length===0){
+                            this.updateDataByIdOnFav();
+                        }
+                        this.KlineOnFav();
+                    });
+                }else if (row==null) {
+                    this.loadingOnFav=false;
+                    axios.get("/stock/data/" + this.pagination3.currentPage + "/" + this.pagination3.pageSize + "/" + this.stockCodeOnFav).then((res) => {
+                        console.log(res);
+                        this.dataListOnFav = res.data.data.records;
+                        this.pagination3.currentPage = res.data.data.current;
+                        this.pagination3.total = res.data.data.total
+                        this.stockInfoOnFav = row.name + ' ' + row.code;
+                        this.stockCodeOnFav = row.code;
+                        this.stockNameOnFav = row.name;
+                    });
+                }
+                },
             getDataById(row){
                 this.stockData=true;
                 if (row!=null){
+
                     axios.get("/stock/data/"+this.pagination2.currentPage+"/"+this.pagination2.pageSize+"/"+row.code).then((res)=>{
-                        console.log(res);
                         this.dataList=res.data.data.records;
                         this.pagination2.currentPage=res.data.data.current;
                         this.pagination2.total=res.data.data.total
-                        console.log(res.data.data.total);
                         this.activeName='dataList';
                         this.openMsg("加载成功","success");
                         this.stockInfo=row.name+' '+row.code;
                         this.stockCode=row.code;
                         this.stockName=row.name;
+                        this.updateDataById();
+                        if (this.dataList.length===0){
+                            this.updateDataById()
+                        }
                     });
                 }else if (row==null) {
                     axios.get("/stock/data/" + this.pagination2.currentPage + "/" + this.pagination2.pageSize + "/" + this.stockCode).then((res) => {
@@ -404,9 +579,9 @@
                     });
                 }
             },
-            updateDataById(){
+            updateDataById(start){
                 this.loading=true
-                axios.get("/stock/data/"+this.stockCode).then((res)=>{
+                axios.get("/stock/data/"+this.stockCode+"/"+start).then((res)=>{
                     this.loading=false;
                     axios.get("/stock/data/"+this.pagination2.currentPage+"/"+this.pagination2.pageSize+"/"+this.stockCode).then((res)=>{
                         console.log(this.stockCode);
@@ -416,6 +591,35 @@
                         this.activeName='dataList';
                         this.openMsg("加载成功","success");
                     });
+                });
+            },
+            updateDataByIdOnFav(start){
+                this.loadingOnFav=true
+                axios.get("/stock/data/"+this.stockCodeOnFav+"/"+start).then((res)=>{
+                    this.loadingOnFav=false;
+                    axios.get("/stock/data/"+this.pagination3.currentPage+"/"+this.pagination3.pageSize+"/"+this.stockCodeOnFav).then((res)=>{
+                        this.dataListOnFav=res.data.data.records;
+                        this.pagination3.currentPage=res.data.data.current;
+                        this.pagination3.total=res.data.data.total
+                        this.openMsg("加载成功","success");
+                    });
+                });
+            },
+            downloadToDesktop(){
+                this.loadingDownload=true;
+                axios.get("/stock/data/download/"+this.stockCodeOnFav).then((res)=>{
+
+
+                    this.downloadUrl="/stockData/"+this.stockNameOnFav+".csv"
+                    this.fileName=this.stockNameOnFav+".csv"
+                    setTimeout(() =>{
+                        document.getElementById("downloadFile").click();
+                        this.loadingDownload=false;
+                        this.openMsg("已开始下载","success");
+                    },2000);
+
+
+
                 });
             },
             confirmLogOut() {
@@ -459,6 +663,12 @@
                 this.pagination2.currentPage = currentPage;
                 //执行查询
                 this.getDataById();
+            },
+            handleFavCurrentChange(currentPage) {
+                //修改页码值为当前选中的页码值
+                this.pagination3.currentPage = currentPage;
+                //执行查询
+                this.getDataByIdOnFav();
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
@@ -524,12 +734,27 @@
                 }
 
             },
+            tableRowClassName({row, rowIndex}) {
+                if (row.pctChg <0) {
+                    return 'warning-row';
+                } else if (row.pctChg >=0) {
+                    return 'success-row';
+                }
+                return '';
+            }
 
         },
         data() {
             const item = {
             };
             return {
+                fileName:'',
+                downloadUrl:'',
+                downloadContent:'下载当前股票所有数据',
+                loadingKlineOnFav:false,
+                loadingDownload:false,
+                loadingOnFav:true,
+                favCount: null,
                 hideSearch: false,
                 fav: false,
                 kline: false,
@@ -538,13 +763,18 @@
                 // visible1: false,
                 loginUser:'null',
                 stockName:'',
+                stockNameOnFav:'',
                 frUrl:'',
+                frFavUrl:'',
                 stockCode:'',
                 stockInfo:'',
-                loading: 'false',
+                stockCodeOnFav:'',
+                stockInfoOnFav:'',
+                loading: false,
                 tabPosition: 'left',
                 activeNames: ['1'],
                 input: null,
+                dataListOnFav:[],
                 favStockList: [],
                 stockList: [],
                 searchList: [],
@@ -577,6 +807,15 @@
                     name: "",
                     description: ""
                 },
+                pagination3: {//分页相关模型数据
+                    currentPage:1 ,//当前页码
+                    pageSize:6,//每页显示的记录数
+                    total:0,//总记录数
+                    type: "",
+                    name: "",
+                    description: ""
+                },
+                percentage: 0,
 
             }
         },

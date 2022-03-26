@@ -1,5 +1,6 @@
 package springbootdemo01.UserController;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.catalina.session.StandardSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -126,7 +127,11 @@ public class UserController {
     public R fav(@PathVariable String username)  {
         List<UserStock> byUsername = stockService.findByUsername(username);
         List<StockInfo> byId = infoService.findById(byUsername);
-        R r=new R(true,byId);
+        int i = stockService.countByUsername(username);
+        JSONObject object = new JSONObject();
+        object.put("favList",byId);
+        object.put("count",i);
+        R r=new R(true,object);
         return r;
 
     }

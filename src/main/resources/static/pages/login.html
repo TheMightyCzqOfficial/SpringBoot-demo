@@ -9,7 +9,7 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>智慧型股票投资分析系统</title>
+    <title>智慧型股票投资分析系统-用户登录</title>
 
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
 
@@ -25,14 +25,40 @@
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="../js/axios-0.18.0.js"></script>
     <style>
+        .app{
+            text-align: center;
 
+            width: 100%;
+            height: 100%;
+            position: absolute;
+
+
+
+        }
 
     </style>
+    <style>
+        .el-carousel__item h3 {
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 150px;
+            margin: 0;
+        }
 
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+    </style>
 </head>
-<body background=img\background-img.jpg style= "background-repeat:no-repeat;background-size:100% 100%; background-attachment: fixed;" >
+<body background=/img/background-img.jpg style= "background-repeat:no-repeat;background-size:100% 100%; background-attachment: fixed;margin: 0px;height: 100%;width: 100%;position: absolute" >
 
-<div id="app" style="margin: 200px;opacity:0.9">
+<div id="app" class="app">
+
     <el-dialog
             title="更新信息"
             :visible.sync="dialogVisible"
@@ -51,122 +77,118 @@
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
     </el-dialog>
-    <el-row style="margin: 200px;">
-        <el-col :span="9" :push="6"><div class="grid-content bg-purple">
 
-            <el-card class="box-card" style="width: 680px;margin: 0 auto " >
-                <el-button type="primary" @click="dialogVisible = true" size="mini">版本信息</el-button>
-                        <div class="text item">
-                            <el-row>
-                                <el-col :span="8" :push="7"><div class="grid-content bg-purple" style="text-align: center">
+<div style="margin: 8%  ;opacity:0.9;">
+    <el-row :gutter="20">
+        <el-col :span="5"><div class="grid-content bg-purple-dark"> <div class="block" style="width: 800px;margin-top: 40px">
+            <span class="demonstration"></span>
+            <el-carousel height="400px">
+                <el-carousel-item v-for="img in imgList" :key="img">
+                    <img :src="img">
 
-                                    <h6 ><el-alert
-                                            title="智慧型股票推荐系统-登录"
-                                            type="error"
-                                            :closable="false">
-                                    </el-alert></h6>
+                </el-carousel-item>
+            </el-carousel>
+        </div></div></el-col>
+        <el-col :span="5" :push="10"><div class="grid-content bg-purple-dark"><el-card class="box-card" style="width: 500px" >
+            <el-button type="primary" @click="dialogVisible = true" size="mini" style="float: right">版本信息</el-button>
+            <img src="/img/logo.jpg" style="width: 50%;height: 50%">
+            <h3 style="text-align: center">用户登录</h3>
+            <el-collapse v-model="activeName" @change="handleChange" accordion style="margin-top: 5px">
 
-                                </div></el-col>
-                            </el-row>
-                        </div>
+                <el-collapse-item title="登录" name="1">
+                    <el-form ref="regform" :model="form" label-width="60px">
+                        <el-row>
+                            <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+                                <el-form-item label="用户名">
+                                    <el-input  v-model="form.userName" style="width: 200px"></el-input>
+                                </el-form-item>
 
-                <el-collapse v-model="activeName" @change="handleChange" accordion style="margin-top: 5px">
-                    <el-collapse-item title="登录" name="1">
-                        <el-form ref="regform" :model="form" label-width="60px">
-                            <el-row>
-                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
-                                    <el-form-item label="用户名">
-                                        <el-input  v-model="form.userName"></el-input>
-                                    </el-form-item>
+                            </div></el-col>
 
-                                </div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="8" :push="6"><div class="grid-content bg-purple">
 
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+                                <el-form-item label="密码">
+                                    <el-input type="password" v-model="form.password"  style="width: 200px"></el-input>
+                                    </el-select>
+                                </el-form-item>
+                            </div></el-col>
 
-                                    <el-form-item label="密码">
-                                        <el-input type="password" v-model="form.password"></el-input>
-                                        </el-select>
-                                    </el-form-item>
-                                </div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="7" :push="6"><div class="grid-content bg-purple">
 
-                            </el-row>
-                            <el-row>
-                                <el-col :span="7" :push="6"><div class="grid-content bg-purple">
+                                <el-form-item label="验证码"  >
+                                    <el-input v-model="form.code" style="width: 100px"></el-input>
+                                </el-form-item>
 
-                                    <el-form-item label="验证码">
-                                        <el-input v-model="form.code"></el-input>
-                                    </el-form-item>
+                            </div></el-col>
+                            <el-col :span="2" :push="7"><div class="grid-content bg-purple" style="margin-left: 10px">
+                                <a href="javascript:void(0)"><img @click="refresh1()" :src="loginUrl" title="看不清点击刷新" ref="logCode"/></a>
+                            </div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="3" :push="9"><div class="grid-content bg-purple">
+                                <el-button type="success" @click="onSubmit()" icon="el-icon-circle-check">立即登录</el-button>
+                            </div></el-col>
+                        </el-row>
+                        </el-form-item>
+                    </el-form>
+                </el-collapse-item>
+                <el-collapse-item title="注册" name="2">
 
-                                </div></el-col>
-                                <el-col :span="2" :push="6"><div class="grid-content bg-purple" style="margin-left: 10px">
-                                    <a href="javascript:void(0)"><img @click="refresh1()" src="/user/checkCode/login/123" title="看不清点击刷新" ref="logCode"/></a>
-                                </div></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="3" :push="9"><div class="grid-content bg-purple">
-                                    <el-button type="success" @click="onSubmit()" icon="el-icon-circle-check">立即登录</el-button>
-                                </div></el-col>
-                            </el-row>
-                            </el-form-item>
-                        </el-form>
-                    </el-collapse-item>
-                    <el-collapse-item title="注册" name="2">
+                    <el-form ref="regform" :model="form" label-width="60px">
+                        <el-row>
+                            <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+                                <el-form-item label="用户名">
+                                    <el-input  v-model="regform.userName" style="width: 200px"></el-input>
+                                </el-form-item>
 
-                        <el-form ref="regform" :model="form" label-width="60px">
-                            <el-row>
-                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
-                                    <el-form-item label="用户名">
-                                        <el-input  v-model="regform.userName"></el-input>
-                                    </el-form-item>
+                            </div></el-col>
 
-                                </div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="8" :push="6"><div class="grid-content bg-purple">
 
-                            </el-row>
-                            <el-row>
-                                <el-col :span="8" :push="6"><div class="grid-content bg-purple">
+                                <el-form-item label="密码">
+                                    <el-input type="password" v-model="regform.password" style="width: 200px"></el-input>
+                                    </el-select>
+                                </el-form-item>
+                            </div></el-col>
 
-                                    <el-form-item label="密码">
-                                        <el-input type="password" v-model="regform.password"></el-input>
-                                        </el-select>
-                                    </el-form-item>
-                                </div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="7" :push="6"><div class="grid-content bg-purple">
 
-                            </el-row>
-                            <el-row>
-                                <el-col :span="7" :push="6"><div class="grid-content bg-purple">
+                                <el-form-item label="验证码" >
+                                    <el-input v-model="regform.code" style="width: 100px"></el-input>
+                                </el-form-item>
 
-                                    <el-form-item label="验证码">
-                                        <el-input v-model="regform.code"></el-input>
-                                    </el-form-item>
-
-                                </div></el-col>
-                                <el-col :span="2" :push="6"><div class="grid-content bg-purple" style="margin-left: 10px">
-                                    <a href="javascript:void(0)"><img @click="refresh2()" src="/user/checkCode/register/123" title="看不清点击刷新" ref="regCode"/></a>
-                                </div></el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="3" :push="9"><div class="grid-content bg-purple">
-                                    <el-button @click="regSubmit()" type="primary"  icon="el-icon-circle-plus-outline" >确认注册</el-button>
-                                </div></el-col>
-                            </el-row>
-                            </el-form-item>
-                        </el-form>
-                    </el-collapse-item>
-                </el-collapse>
-
-
-
-
-
-            </el-card>
-        </div></el-col>
+                            </div></el-col>
+                            <el-col :span="2" :push="7"><div class="grid-content bg-purple" style="margin-left: 10px">
+                                <a href="javascript:void(0)"><img @click="refresh2()" :src="regUrl" title="看不清点击刷新" ref="regCode"/></a>
+                            </div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="3" :push="9"><div class="grid-content bg-purple">
+                                <el-button @click="regSubmit()" type="primary"  icon="el-icon-circle-plus-outline" >确认注册</el-button>
+                            </div></el-col>
+                        </el-row>
+                        </el-form-item>
+                    </el-form>
+                </el-collapse-item>
+            </el-collapse>
+        </el-card></div></el-col>
 
     </el-row>
+</div>
 
 
-    <style>
+</div>
+
+
+<style>
         .text {
             font-size: 14px;
         }
@@ -191,6 +213,8 @@
         },
         data() {
             return {
+                regUrl:'/user/checkCode/register/123',
+                loginUrl:'/user/checkCode/login/123',
                 dialogVisible: false,
                 activeName:'1',
                 drawer: false,
@@ -206,6 +230,10 @@
                     code: null,
                 },
                 reverse: true,
+                imgList:['/img/1.jpg',
+                '/img/2.jpg',
+                '/img/3.jpg',
+                    '/img/4.jpg'],
                 activities: [{
                     content: '添加了基础股票池、查看股票详细信息、模糊搜索功能',
                     timestamp: '2022-02-20'
@@ -311,7 +339,7 @@
                             });
                             setTimeout(() =>{
                                 window.location.href="/pages/stock.html";
-                            },2000);
+                            },1500);
 
                         }
 

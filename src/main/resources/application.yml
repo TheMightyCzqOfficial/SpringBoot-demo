@@ -10,7 +10,6 @@ spring:
     restart:
       additional-paths: resources/**,static/pages/KLine,templates/**,C://Users//CZQ//IdeaProjects//springbootdemo01//src//main//resources//static//pages//KLine
       enabled: true
-      trigger-file: resources/trigger-file.txt
   resources:
     static-locations: file:D://kline,file:C://Users//CZQ//IdeaProjects//springbootdemo01//src//main//resources//static
   mvc:

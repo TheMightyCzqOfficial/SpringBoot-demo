@@ -63,15 +63,23 @@ public class StockController {
 
 //        List<StockInfo> all = service.findAll();
         dataService.getKline(code);
-//        FileOutputStream f=new FileOutputStream("C:\\Users\\CZQ\\IdeaProjects\\springbootdemo01\\src\\main\\resources\\trigger-file.txt",true);//true:追加写入
+//        FileOutputStream f=new FileOutputStream("C:\\Users\\CZQ\\IdeaProjects\\springbootdemo01\\src\\main\\resources\\PythonConfig.properties",true);//true:追加写入
 //        f.write("黄显好Thao".getBytes() );
 //        f.close();
         R r=new R(true,"done!");
         return r;
     }
-    @GetMapping("/data/{code}")//RequestMapping+method = RequestMethod.GET
-    public R updateData(@PathVariable String code){
-        dataService.getDataByCode(code);
+    @GetMapping("/data/{code}/{startDate}")//RequestMapping+method = RequestMethod.GET
+    public R updateData(@PathVariable String code,@PathVariable String startDate){
+        dataService.getDataByCode(code,startDate);
+//        List<StockInfo> all = service.findAll();
+
+        R r=new R(true,"done!");
+        return r;
+    }
+    @GetMapping("/data/download/{code}")//RequestMapping+method = RequestMethod.GET
+    public R download(@PathVariable String code){
+        dataService.saveData(code);
 //        List<StockInfo> all = service.findAll();
 
         R r=new R(true,"done!");

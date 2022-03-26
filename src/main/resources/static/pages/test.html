@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 页面meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>智慧型股票投资分析系统</title>
+
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+
+    <!--    &lt;!&ndash;引入 element-ui 的样式，&ndash;&gt;-->
+    <!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <!--    &lt;!&ndash; 必须先引入vue，  后使用element-ui &ndash;&gt;-->
+    <!--    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>-->
+    <!--    &lt;!&ndash; 引入element 的组件库&ndash;&gt;-->
+    <!--    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <style>
+        .app{
+            text-align: center;
+            opacity:0.9;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+
+
+
+        }
+
+
+             /*去掉横向滚动条*/
+         .el-scrollbar__wrap{overflow-x: hidden;}
+
+
+    </style>
+
+</head>
+<body>
+
+<div id="app" class="app">
+
+    <div style="height: 405px;width: 100px; ">
+        <el-scrollbar style="height:100%;overflow-x: hidden;">
+        <ul v-for="index in 100" :key="index">
+
+            <li>{{index}}</li>
+
+        </ul>
+        </el-scrollbar>
+
+    </div>
+    <a href="/img/1.jpg" download="123.jpg">download</a>
+
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+
+        },
+        created(){
+
+        },
+        data() {
+            return {
+                activeIndex: '1',
+                activeIndex2: '1',
+            };
+        },
+        methods: {
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    })
+</script>
+
+<!---->
+
+</body>
+</html>
