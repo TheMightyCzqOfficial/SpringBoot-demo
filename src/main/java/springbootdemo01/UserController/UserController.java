@@ -56,6 +56,7 @@ public class UserController {
         OutputStream os = response.getOutputStream();
         //返回验证码和图片的map
         Map<String,Object> map = VerificationCode.getImageCode(86, 37, os);
+        System.out.println(status);
         if(status.equals("login")){
             simpleCaptcha = "checkCode";
         }else {
@@ -83,6 +84,7 @@ public class UserController {
 
         // 获得验证码对象
         Object cko = request.getSession().getAttribute("checkCode");
+        System.out.println(cko.toString());
 //        System.out.println(cko.toString()+"...");
         if (code.equals("")) {
             R r=new R(false,"code");
@@ -139,6 +141,7 @@ public class UserController {
     public R register(@PathVariable String username,@PathVariable String password,@PathVariable String code)  {
         Object cko = request.getSession().getAttribute("checkCode1");
 //        System.out.println(cko.toString()+"...");
+        System.out.println(cko.toString());
         if (code.equals("")) {
             R r=new R(false,"code");
             return r;

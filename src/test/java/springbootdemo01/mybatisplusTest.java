@@ -17,6 +17,9 @@ import springbootdemo01.service.StockInfoService;
 import springbootdemo01.service.impl.StockInfoServiceImpl;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 @SpringBootTest
@@ -68,9 +71,36 @@ public class mybatisplusTest {
         userMapper.insert(user);
     }
     @Test
-    void aadsdad(){
+    public List<String> getDP(){
+            List<String> dpList=new ArrayList<>();
+            Process proc;
+            try {
+                String[] args1 = new String[] { "C:\\Users\\CZQ\\PycharmProjects\\PythonDemo\\venv\\Scripts\\python.exe",
+                        "C:\\Users\\CZQ\\PycharmProjects\\PythonDemo\\7\\stockDemo1\\getDP.py"
+                        };//python.exe处为你系统中python的安装位置；python.py为想要执行的python文件位置；test为想要传的参数
+                //proc = Runtime.getRuntime().exec("python.exe python.py ");// 执行py文件 不传参数
+                proc=Runtime.getRuntime().exec(args1);
 
-        System.out.println(~15);
+                //用输入输出流来截取结果
+                BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream(), "GBK"));
+
+                String line=null;
+                while ((line = in.readLine()) != null) {
+                    dpList.add(line);
+
+                }
+                dpList.remove(2);
+                System.out.println(dpList);
+                in.close();
+                proc.waitFor();
+//            System.out.println("保存成功！ ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return dpList;
+        }
     }
-    }
+
 

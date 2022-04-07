@@ -80,16 +80,7 @@
 
 <div style="margin: 8%  ;opacity:0.9;">
     <el-row :gutter="20">
-        <el-col :span="5"><div class="grid-content bg-purple-dark"> <div class="block" style="width: 800px;margin-top: 40px">
-            <span class="demonstration"></span>
-            <el-carousel height="400px">
-                <el-carousel-item v-for="img in imgList" :key="img">
-                    <img :src="img">
-
-                </el-carousel-item>
-            </el-carousel>
-        </div></div></el-col>
-        <el-col :span="5" :push="10"><div class="grid-content bg-purple-dark"><el-card class="box-card" style="width: 500px" >
+        <el-col :span="5" :push="15"><div class="grid-content bg-purple-dark"><el-card class="box-card" style="width: 500px" >
             <el-button type="primary" @click="dialogVisible = true" size="mini" style="float: right">版本信息</el-button>
             <img src="/img/logo.jpg" style="width: 50%;height: 50%">
             <h3 style="text-align: center">用户登录</h3>
@@ -136,7 +127,7 @@
                         </el-form-item>
                     </el-form>
                 </el-collapse-item>
-                <el-collapse-item title="注册" name="2">
+                <el-collapse-item title="注册" name="2" >
 
                     <el-form ref="regform" :model="form" label-width="60px">
                         <el-row>
@@ -209,11 +200,12 @@
 
         },
         created(){
-            this.tips()
+            this.tips();
+            this.refresh1()
         },
         data() {
             return {
-                regUrl:'/user/checkCode/register/123',
+                regUrl:'/user/checkCode/register/12345',
                 loginUrl:'/user/checkCode/login/123',
                 dialogVisible: false,
                 activeName:'1',
@@ -230,10 +222,6 @@
                     code: null,
                 },
                 reverse: true,
-                imgList:['/img/1.jpg',
-                '/img/2.jpg',
-                '/img/3.jpg',
-                    '/img/4.jpg'],
                 activities: [{
                     content: '添加了基础股票池、查看股票详细信息、模糊搜索功能',
                     timestamp: '2022-02-20'
@@ -246,6 +234,15 @@
                 }, {
                     content: '增加实时请求动态K线图',
                     timestamp: '2020-02-26'
+                },{
+                    content: '增加下载全部信息功能、按日期更新数据、丰富详情界面',
+                    timestamp: '2020-03-25'
+                },{
+                    content: '增加股票排行、实时请求最新新闻、上证指数',
+                    timestamp: '2020-02-26'
+                },{
+                    content: '详情界面实时显示k线',
+                    timestamp: '2020-02-27'
                 }],
 
             };

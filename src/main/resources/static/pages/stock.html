@@ -20,6 +20,7 @@
     .el-table .success-row {
         background: #ff8f81;
     }
+    .el-scrollbar__wrap{overflow-x: hidden;}
 
 </style>
 <body >
@@ -35,8 +36,8 @@
 
 
 
-
-                            <el-menu-item style="margin-left: 200px">
+                        <el-menu-item  ><span style="font-size: 25px">上证指数：</span><span id="dpType"  style="font-size: 25px">{{dp}}&nbsp;&nbsp;&nbsp;{{dpChange}} <i id="dpState" style="font-size: 25px" class=""></i></span></el-menu-item>
+                            <el-menu-item style="margin-left: 10px">
                                 <div class="grid-content bg-purple-dark" style="text-align: center">
                                         <el-input style="width: 200px"
                                                   placeholder="搜索股票(代码/名称)"
@@ -53,11 +54,11 @@
 
 
 
-                            <el-menu-item index="1" @click.native="getAll()" style="margin-left: 350px">股票列表</el-menu-item>
+                            <el-menu-item index="1" @click.native="getAll()" style="margin-left: 50px">股票列表</el-menu-item>
 
-                            <el-menu-item index="2" @click.native="getMyFav()" style="margin-left: 50px">我的自选</el-menu-item>
+                            <el-menu-item index="2" @click.native="getMyFav()" style="margin-left: 10px">我的自选</el-menu-item>
 
-                            <el-menu-item index="3" style="margin-left: 50px">股票推荐</el-menu-item>
+                            <el-menu-item index="3" style="margin-left: 10px">股票推荐</el-menu-item>
 
                         <div  style="float: right">
                             <el-dropdown>
@@ -84,44 +85,86 @@
 
         <el-tabs :tab-position="tabPosition" :stretch="true" v-model="activeName" style="height: 100%" @tab-click="handleClick" >
 
-            <el-tab-pane label="股票列表"  name="stockList">
-                <el-table size="small" current-row-key="id" :data="stockList"  stripe highlight-current-row>
+                <el-tab-pane label="股票列表"  name="stockList">
+                    <div>
 
-                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+                        <el-row >
+                            <el-col :span="9"><div class="grid-content bg-purple-dark">
+                                <div style="width: 750px">
+                                    <el-divider content-position="left">股票列表</el-divider>
+                                    <el-table size="small" current-row-key="id" :data="stockList"  stripe highlight-current-row>
 
-                    <el-table-column prop="code" label="股票代码" align="center"></el-table-column>
+                                        <el-table-column type="index" align="center" label="序号" width="100px"></el-table-column>
 
-                    <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+                                        <el-table-column prop="code" label="股票代码" align="center" width="100px"></el-table-column>
 
-                    <el-table-column prop="area" label="所属地区" align="center"></el-table-column>
+                                        <el-table-column prop="name" label="股票名称" align="center" width="100px"></el-table-column>
 
-                    <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
+                                        <el-table-column prop="area" label="所属地区" align="center" width="100px"></el-table-column>
 
-                    <el-table-column label="" align="center">
-                        <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
-                            <el-button type="success" @click="addFav(scope.row)" icon="el-icon-star-off" circle></el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <div class="pagination-container" style="text-align: center;background: #f3f9ff" >
+                                        <el-table-column prop="type" label="股票类型" align="center" width="100px"></el-table-column>
 
-                    <el-pagination
-                            class="pagiantion"
+                                        <el-table-column label="操作" align="center" fixed="right" width="200px">
+                                            <template slot-scope="scope">
+                                                <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
+                                                <el-button type="success" @click="addFav(scope.row)" icon="el-icon-star-off" circle></el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <div class="pagination-container" style="text-align: center;background: #f3f9ff" >
 
-                            @current-change="handleCurrentChange"
+                                        <el-pagination
+                                                class="pagiantion"
 
-                            :current-page="pagination.currentPage"
+                                                @current-change="handleCurrentChange"
 
-                            :page-size="pagination.pageSize"
+                                                :current-page="pagination.currentPage"
 
-                            layout="total, prev, pager, next, jumper"
+                                                :page-size="pagination.pageSize"
 
-                            :total="pagination.total" >
+                                                layout="total, prev, pager, next, jumper"
 
-                    </el-pagination>
+                                                :total="pagination.total" >
 
-                </div>
+                                        </el-pagination>
+
+                                    </div>
+                                </div>
+
+                            </div></el-col>
+                            <el-col :span="10" style="margin-left: 200px"><div class="grid-content bg-purple-dark">
+                                <div>
+                                    <el-divider content-position="left">股票市价总值排名前十名 </el-divider>
+                                    <el-table size="small" current-row-key="id" :data="topList"  border  highlight-current-row>
+
+                                        <el-table-column type="index" align="center" label="排名"></el-table-column>
+
+                                        <el-table-column prop="code" label="股票代码" align="center"></el-table-column>
+
+                                        <el-table-column prop="name" label="股票名称" align="center"></el-table-column>
+
+                                        <el-table-column prop="value" label="市价总值（万元）" width="150px" align="center"></el-table-column>
+
+                                        <el-table-column prop="percent" label="占市场比例 %" align="center"></el-table-column>
+
+                                        <el-table-column label="操作" align="center" width="200px">
+                                            <template slot-scope="scope">
+                                                <el-button type="primary" size="mini" @click="getDataById(scope.row)">股票详情</el-button>
+                                                <el-button type="success" @click="addFav(scope.row)" icon="el-icon-star-off" circle></el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <el-divider content-position="left"><span>最后更新时间: <el-tag type="success">{{topDate}} </el-tag>(数据来自上交所)</span> </el-divider>
+
+                                </div>
+
+                            </div></el-col>
+                        </el-row>
+                    </div>
+
+
+
+
             </el-tab-pane>
             <el-tab-pane label="查询列表" v-if="hideSearch" name="searchList">
                                 <el-table size="small" current-row-key="id" :data="searchList" stripe highlight-current-row>
@@ -170,63 +213,87 @@
             <el-tab-pane label="股票详情" v-if="stockData" name="dataList"
                          v-loading="loading"
                          element-loading-text="数据加载中。。">
-                <el-dropdown>
-                    <el-button type="primary">
-                        更新数据<i class="el-icon-arrow-down el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="updateDataById('half')">更新半年以内</el-dropdown-item>
-                        <el-dropdown-item @click.native="updateDataById('one')">更新1年以内</el-dropdown-item>
-                        <el-dropdown-item @click.native="updateDataById('five')">更新5年以内</el-dropdown-item>
-                        <el-dropdown-item @click.native="updateDataById('ten')">更新10年以内</el-dropdown-item>
+                <el-row :gutter="20">
+                    <el-col :span="12"><div class="grid-content bg-purple">
+                        <el-dropdown>
+                            <el-button type="primary">
+                                更新数据<i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item @click.native="updateDataById('half')">更新半年以内</el-dropdown-item>
+                                <el-dropdown-item @click.native="updateDataById('one')">更新1年以内</el-dropdown-item>
+                                <el-dropdown-item @click.native="updateDataById('five')">更新5年以内</el-dropdown-item>
+                                <el-dropdown-item @click.native="updateDataById('ten')">更新10年以内</el-dropdown-item>
 
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <el-button type="primary"  @click="Kline()">查看K线图</el-button>
-                <el-button type="success" @click="addFav()" icon="el-icon-star-off" circle></el-button>
-                <el-divider content-position="left">{{stockInfo}}</el-divider>
-                <el-table size="small" current-row-key="id" :data="dataList"  border  highlight-current-row :row-class-name="tableRowClassName">
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                        <el-button type="success" @click="addFav()" icon="el-icon-star-off" circle></el-button>
+                        <el-divider content-position="left">{{stockInfo}}</el-divider>
+                        <span>实时价格: <span id="price1">{{price1}}&nbsp;{{tradeChange1}} </span><span> {{tradeTime1}}</span>
+                            <el-button style="margin-left: 5px" type="primary" icon="el-icon-refresh" :loading="loadingPrice1"  @click="getPrice1()" circle></el-button>
+                            <span id="price1TimeOut">若长时间未加载请重新进入该页面</span></span>
+                        <el-table size="small" current-row-key="id" :data="dataList"  border  highlight-current-row :row-class-name="tableRowClassName">
 
-                    <el-table-column type="index" align="center" label="序号"></el-table-column>
-                    <el-table-column prop="tradeDate" label="交易日期" align="center"
-                                     sortable
-                                     :default-sort = "{prop: 'date', order: 'descending'}"
-                    ></el-table-column>
-                    <el-table-column prop="open" label="开盘价" align="center"></el-table-column>
-                    <el-table-column prop="high" label="当日最高" align="center"></el-table-column>
-                    <el-table-column prop="low" label="当日最低" align="center"></el-table-column>
-                    <el-table-column prop="close" label="收盘价" align="center"></el-table-column>
-                    <el-table-column prop="preClose" label="昨收价" align="center"></el-table-column>
-                    <el-table-column prop="changeAmount" label="涨跌额" align="center"></el-table-column>
-                    <el-table-column prop="pctChg" label="涨跌幅(点)" align="center"></el-table-column>
-                    <el-table-column prop="vol" label="成交量（手）" align="center"></el-table-column>
-                    <el-table-column prop="amount" label="成交额（千元）" align="center"></el-table-column>
-                </el-table>
-                <div class="pagination-container" style="text-align: center">
+                            <el-table-column type="index" align="center" label="序号" fixed></el-table-column>
+                            <el-table-column prop="tradeDate" label="交易日期" fixed width="100px" align="center"
+                                             sortable
+                                             :default-sort = "{prop: 'date', order: 'descending'}"
+                            ></el-table-column>
+                            <el-table-column prop="open" label="开盘价" align="center"></el-table-column>
+                            <el-table-column prop="high" label="当日最高" align="center"></el-table-column>
+                            <el-table-column prop="low" label="当日最低" align="center"></el-table-column>
+                            <el-table-column prop="close" label="收盘价" align="center"></el-table-column>
+                            <el-table-column prop="preClose" label="昨收价" align="center"></el-table-column>
+                            <el-table-column prop="changeAmount" label="涨跌额" align="center"></el-table-column>
+                            <el-table-column prop="pctChg" label="涨跌幅(点)" align="center"></el-table-column>
+                            <el-table-column prop="vol" label="成交量（手）" align="center"></el-table-column>
+                            <el-table-column prop="amount" label="成交额（千元）" align="center"></el-table-column>
+                        </el-table>
+                        <div class="pagination-container" style="text-align: center">
 
-                    <el-pagination
-                            class="pagiantion"
+                            <el-pagination
+                                    class="pagiantion"
 
-                            @current-change="handleDataCurrentChange"
+                                    @current-change="handleDataCurrentChange"
 
-                            :current-page="pagination2.currentPage"
+                                    :current-page="pagination2.currentPage"
 
-                            :page-size="pagination2.pageSize"
+                                    :page-size="pagination2.pageSize"
 
-                            layout="total, prev, pager, next, jumper"
+                                    layout="total, prev, pager, next, jumper"
 
-                            :total="pagination2.total">
+                                    :total="pagination2.total">
 
-                    </el-pagination>
+                            </el-pagination>
 
-                </div>
+                        </div>
+                    </div></el-col>
+                    <el-col :span="11"> <div class="grid-content bg-purple">
+
+                             <div  style="height:400px; width:630px" v-loading="loading">
+                                    <!--                            <el-divider></el-divider>-->
+                                    <iframe  id="frame" :src="frUrl" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
+
+                                </div>
+                                </div>
+
+
+                                <div id="latestNewsOnData" style="height: 400px; width: 600px;overflow: hidden;margin-top: 20px" hidden="true" v-loading="loadingNews">
+                                    <el-divider content-position="left">{{stockName}}-最新资讯(数据来源：新浪财经)<el-button style="margin-left: 5px" type="primary" icon="el-icon-refresh" @click="getNews0()" circle></el-button></el-divider>
+                                    <el-scrollbar style="height:100%;">
+                                        <ul v-for="item in newsListOnData" :key="item">
+
+                                            <li style="list-style: none"><el-link :href="item.link" target="_blank" :underline="false">{{item.title}}</el-link></li>
+
+                                        </ul>
+                                    </el-scrollbar>
+                                </div>
+
+                   </el-col>
+                </el-row>
+
             </el-tab-pane>
-            <el-tab-pane label="K线" v-if="kline" name="Kline">
-                <div  style="height:500px; width:1000px" >
-                    <iframe  id="frame" :src="frUrl" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
 
-                </div>
-            </el-tab-pane>
             <el-tab-pane label="收藏列表" v-if="fav" name="favStockList">
 
 <!--                    <el-scrollbar style="height:100%;">-->
@@ -253,7 +320,7 @@
 
                         <el-table-column prop="type" label="股票类型" align="center"></el-table-column>
 
-                        <el-table-column label="详情" align="center">
+                        <el-table-column label="操作" align="center">
 
                             <template slot-scope="scope">
 
@@ -270,7 +337,7 @@
                                         <el-button size="primary" type="mini" @click="closePopover(scope.$index)">取消</el-button>
                                         <el-button type="danger" size="mini" @click="delFav(scope.row,scope.$index)">确定</el-button>
                                     </div>
-                                    <el-button type="danger" slot="reference" @click="openPopover(scope.$index)" icon="el-icon-delete" circle></el-button>
+                                    <el-button type="danger" size="small" slot="reference" @click="openPopover(scope.$index)" icon="el-icon-delete" circle></el-button>
                                 </el-popover>
 
 
@@ -301,11 +368,11 @@
                                 </el-descriptions-item>
                             </el-descriptions>
                         </el-card></div></el-col>
-                    <el-col :span="16" >
+                    <el-col :span="16" v-loading="loadingOnFav" :element-loading-text="loadingText">
 
                         <div>
 
-                            <div v-loading="loadingOnFav" >
+                            <div>
                                 <div style="font-size: 21px">
                                 <el-dropdown>
                                     <el-button type="primary">
@@ -323,6 +390,7 @@
                                     <el-button  type="success" icon="el-icon-download" :loading="loadingDownload" @click="downloadToDesktop()">
                                     下载数据
                                 </el-button>
+
                                 <el-popover
                                         placement="right"
                                         width="200"
@@ -330,13 +398,15 @@
                                         :content="downloadContent">
                                         <i class="el-icon-warning-outline" slot="reference" ></i>
                                 </el-popover>
+
                                     <a id="downloadFile" :href="downloadUrl" :download="fileName" hidden></a>
                                 </div>
-                                <el-divider content-position="left">{{stockInfoOnFav}}</el-divider>
+                                <el-divider content-position="left">{{stockInfoOnFav}} </el-divider>
+                                <span>实时价格: <span id="price">{{price}}&nbsp;{{tradeChange}} </span><span> {{tradeTime}}</span>
+                                    <el-button style="margin-left: 5px" type="primary" icon="el-icon-refresh" :loading="loadingPrice" @click="getPrice()" circle></el-button>
+                                <span id="priceTimeOut">若长时间未加载请重新进入该页面</span></span>
                         <el-table size="small" current-row-key="id" :data="dataListOnFav"   border  highlight-current-row
                                   :row-class-name="tableRowClassName">
-
-                            <el-table-column type="index" align="center" label="序号" ></el-table-column>
                             <el-table-column prop="tradeDate" label="交易日期" align="center"
                                              sortable
                                              :default-sort = "{prop: 'date', order: 'descending'}"
@@ -374,11 +444,31 @@
                         </div>
 
                             </div>
-                        <div  style="height:600px; width:1500px" v-loading="loadingKlineOnFav">
-<!--                            <el-divider></el-divider>-->
-                            <iframe  id="frameOnFav" :src="frFavUrl" height="100%" width="100%" frameborder="0" scrolling="no" ></iframe>
+                            <el-row :gutter="20">
 
-                        </div>
+                                <el-col :span="6">
+                                    <div class="grid-content bg-purple"><div  style="height:400px; width:630px">
+                                    <!--                            <el-divider></el-divider>-->
+                                    <iframe  id="frameOnFav" :src="frFavUrl" height="600px" width="1000px" frameborder="0" scrolling="no" ></iframe>
+
+                                </div>
+                                </div></el-col>
+                                <el-col :span="6" :push="5"><div class="grid-content bg-purple">
+
+                                    <div id="latestNews" style="height: 400px; width: 600px;overflow: hidden;margin-top: 20px" hidden="true" >
+                                        <el-divider content-position="left">{{stockNameOnFav}}-最新资讯(数据来源：新浪财经)<el-button style="margin-left: 5px" type="primary" icon="el-icon-refresh" @click="getNews()" circle></el-button></el-divider>
+                                        <el-scrollbar style="height:100%;">
+                                            <ul v-for="item in newsList" :key="item">
+
+                                                <li style="list-style: none"><el-link :href="item.link" target="_blank" :underline="false">{{item.title}}</el-link></li>
+
+                                            </ul>
+                                        </el-scrollbar>
+                                    </div>
+                                </div></el-col>
+                            </el-row>
+
+
                     </div></el-col>
                 </el-row>
 
@@ -404,9 +494,10 @@
         // },
         created() {
             //调用查询全部数据的操作
-
+            this.getDP();
             this.getUser();
             this.getAll();
+            this.getTop();
         },
         data: function() {
             return { visible: false }
@@ -421,13 +512,54 @@
                 this.$refs['popover-'+index].doClose();
             },
             getMyFav(){
-                console.log(this.loginUser);
+                this.loadingText="未选中股票，请从左侧选择股票";
                 axios.get("/user/myFav/"+this.loginUser).then((res)=>{
                     this.fav=true;
                     this.favStockList=res.data.data.favList;
                     this.percentage=res.data.data.count/4670*100
                     this.favCount=res.data.data.count
                     this.activeName='favStockList';
+                });
+            },
+            getPrice1(){
+                this.loadingPrice1=true;
+                this.tradeTime1=null;
+                this.price1=null;
+                this.tradeChange1=null;
+                document.getElementById("price1TimeOut").hidden=false;
+                axios.get("/stock/price/"+this.stockName).then((res)=>{
+                    this.tradeTime1=res.data.data.time;
+                    this.price1=res.data.data.price;
+                    this.tradeChange1=res.data.data.change;
+                    console.log(this.price);
+                    if (res.data.data.color==="green"){
+                        document.getElementById("price1").style.color="#00FF00";
+                    }else {
+                        document.getElementById("price1").style.color="#FF3300";
+                    }
+                    this.loadingPrice1=false;
+                    document.getElementById("price1TimeOut").hidden=true;
+                });
+            },
+            getPrice(){
+                this.loadingPrice=true;
+                this.tradeTime=null;
+                this.price=null;
+                this.tradeChange=null;
+                document.getElementById("priceTimeOut").hidden=false;
+                axios.get("/stock/price/"+this.stockNameOnFav).then((res)=>{
+                    document.getElementById("priceTimeOut").hidden=true;
+                    this.tradeTime=res.data.data.time;
+                    this.price=res.data.data.price;
+                    this.tradeChange=res.data.data.change;
+                    console.log(this.price);
+                    if (res.data.data.color==="green"){
+                        document.getElementById("price").style.color="#00FF00";
+                    }else {
+                        document.getElementById("price").style.color="#FF3300";
+                    }
+                    this.loadingPrice=false;
+                    document.getElementById("priceTimeOut").hidden=true;
                 });
             },
             errorMsg(title,msg){
@@ -488,11 +620,10 @@
                 });
             },
             Kline(){
+                this.frUrl=null;
                 this.loading=true;
                 axios.get("/stock/kline/"+this.stockCode).then((res)=>{
                     setTimeout(() =>{
-                        this.activeName='Kline';
-                        this.kline=true;
                         this.openMsg("加载成功","success");
                         this.frUrl="/"+this.stockName+"K线.html";
                         this.loading=false;
@@ -516,22 +647,44 @@
             },
             getDataByIdOnFav(row){
                 if (row!=null){
-
-                    axios.get("/stock/data/"+this.pagination3.currentPage+"/"+this.pagination3.pageSize+"/"+row.code).then((res)=>{
-                        this.loadingOnFav=false;
-                        console.log(res);
-                        this.dataListOnFav=res.data.data.records;
-                        this.pagination3.currentPage=res.data.data.current;
-                        this.pagination3.total=res.data.data.total
+                    this.loadingPrice=true;
+                    this.loadingOnFav=true;
+                    this.dataListOnFav=null;
+                    this.tradeTime=null;
+                    this.price=null;
+                    this.tradeChange=null;
+                    this.frFavUrl=null;
+                    this.stockInfoOnFav=null;
+                    this.loadingText="正在加载数据，请稍后...";
+                    this.pagination3.currentPage=1;
+                    document.getElementById("latestNews").hidden=true;
+                    axios.get("/stock/fav/"+row.name+"/"+row.code).then((res)=>{
+                        document.getElementById("latestNews").hidden=false;
                         this.stockInfoOnFav=row.name+' '+row.code;
                         this.stockCodeOnFav=row.code;
                         this.stockNameOnFav=row.name;
-                        this.updateDataByIdOnFav();
-                        console.log(this.dataListOnFav);
-                        if(this.dataListOnFav.length===0){
-                            this.updateDataByIdOnFav();
+                        if (res.data.data.color==="green"){
+                            document.getElementById("price").style.color="#00FF00";
+                        }else {
+                            document.getElementById("price").style.color="#FF3300";
                         }
-                        this.KlineOnFav();
+
+                        this.tradeTime=res.data.data.time;
+                        this.price=res.data.data.price;
+                        this.tradeChange=res.data.data.change;
+                        this.newsList=res.data.data.newList;
+                        this.dataListOnFav=res.data.data.Ipage.records;
+                        this.pagination3.currentPage=res.data.data.current;
+                        this.pagination3.total=res.data.data.total
+                        this.dataListOnFav=res.data.data.Ipage.records;
+                        this.pagination3.currentPage=res.data.data.Ipage.current;
+                        this.pagination3.total=res.data.data.Ipage.total
+                        this.frFavUrl="/"+this.stockNameOnFav+"K线.html";
+                        this.loadingOnFav=false;
+                        if (this.price!=null){
+                            this.loadingPrice=false;
+                        }
+                        document.getElementById("priceTimeOut").hidden = this.price != null;
                     });
                 }else if (row==null) {
                     this.loadingOnFav=false;
@@ -547,9 +700,11 @@
                 }
                 },
             getDataById(row){
-                this.stockData=true;
-                if (row!=null){
 
+                this.stockData=true;
+
+                if (row!=null){
+                    this.pagination2.currentPage=1;
                     axios.get("/stock/data/"+this.pagination2.currentPage+"/"+this.pagination2.pageSize+"/"+row.code).then((res)=>{
                         this.dataList=res.data.data.records;
                         this.pagination2.currentPage=res.data.data.current;
@@ -563,6 +718,10 @@
                         if (this.dataList.length===0){
                             this.updateDataById()
                         }
+                        document.getElementById("latestNewsOnData").hidden=true;
+                        this.getPrice1();
+                        this.getNews0();
+                        this.Kline();
                     });
                 }else if (row==null) {
                     axios.get("/stock/data/" + this.pagination2.currentPage + "/" + this.pagination2.pageSize + "/" + this.stockCode).then((res) => {
@@ -595,6 +754,7 @@
             },
             updateDataByIdOnFav(start){
                 this.loadingOnFav=true
+                this.loadingText="正在加载数据，请稍后...";
                 axios.get("/stock/data/"+this.stockCodeOnFav+"/"+start).then((res)=>{
                     this.loadingOnFav=false;
                     axios.get("/stock/data/"+this.pagination3.currentPage+"/"+this.pagination3.pageSize+"/"+this.stockCodeOnFav).then((res)=>{
@@ -608,8 +768,6 @@
             downloadToDesktop(){
                 this.loadingDownload=true;
                 axios.get("/stock/data/download/"+this.stockCodeOnFav).then((res)=>{
-
-
                     this.downloadUrl="/stockData/"+this.stockNameOnFav+".csv"
                     this.fileName=this.stockNameOnFav+".csv"
                     setTimeout(() =>{
@@ -712,6 +870,12 @@
                     console.log(res.data.data.total);
                 });
         },
+            getTop() {
+                axios.get("/stock/top").then((res)=>{
+                    this.topList=res.data.data.topList;
+                    this.topDate=res.data.data.date;
+                });
+            },
             searchData(page) {
                 if (this.input==null){
                     this.openMsg("请输入搜索的内容！","error");
@@ -734,10 +898,56 @@
                 }
 
             },
+            getDP() {
+                    axios.get("/stock/dp").then((res)=>{
+                        const elementById = document.getElementById("dpType");
+                        const state = document.getElementById("dpState");
+                        this.dp=res.data.data.dp;
+                        this.dpChange=res.data.data.change;
+                        if (res.data.data.color===0){
+                           elementById.style.color="#00FF00";
+                           state.setAttribute("class","el-icon-bottom");
+                        }else{
+                            elementById.style.color="#FF3300";
+                            state.setAttribute("class","el-icon-top");
+                        }
+                        // this.input=null;
+                    });
+                setTimeout(() =>{//延迟执行
+                    this.getDP();
+                },1000*60);
+
+
+            },
+            getNews() {
+                this.loadingNews=true;
+                axios.get("/stock/news/"+this.stockNameOnFav).then((res)=>{
+                    this.loadingNews=false;
+                    this.openMsg("刷新成功","success");
+                    this.newsList=res.data.data.newList;
+                    console.log(this.newsList);
+                    document.getElementById("latestNews").hidden=false;
+                });
+
+            },
+            getNews0() {
+                this.loadingNews=true;
+                axios.get("/stock/news/"+this.stockName).then((res)=>{
+                    this.loadingNews=false;
+                    this.openMsg("刷新成功","success");
+                    this.newsListOnData=res.data.data.newList;
+                    document.getElementById("latestNewsOnData").hidden=false;
+                });
+
+            },
             tableRowClassName({row, rowIndex}) {
+                // const elementById = document.getElementById("dataState");
                 if (row.pctChg <0) {
+                    // elementById.setAttribute("class","el-icon-bottom");
                     return 'warning-row';
                 } else if (row.pctChg >=0) {
+
+                    // elementById.setAttribute("class","el-icon-top");
                     return 'success-row';
                 }
                 return '';
@@ -748,6 +958,20 @@
             const item = {
             };
             return {
+                loadingText:null,
+                loadingPrice1:false,
+                loadingPrice:false,
+                price:'',
+                tradeTime:'',
+                tradeChange:'',
+                price1:'',
+                tradeTime1:'',
+                tradeChange1:'',
+                topDate:'',
+                loadingNews:false,
+                newsListOnData:[],
+                dp:'',
+                dpChange:'',
                 fileName:'',
                 downloadUrl:'',
                 downloadContent:'下载当前股票所有数据',
@@ -774,11 +998,13 @@
                 tabPosition: 'left',
                 activeNames: ['1'],
                 input: null,
+                newsList:[],
                 dataListOnFav:[],
                 favStockList: [],
                 stockList: [],
                 searchList: [],
                 dataList: [],
+                topList: [],
                 activeIndex: '1',
                 activeIndex2: '1',
                 activeName: 'stockList',
@@ -815,7 +1041,7 @@
                     name: "",
                     description: ""
                 },
-                percentage: 0,
+
 
             }
         },
