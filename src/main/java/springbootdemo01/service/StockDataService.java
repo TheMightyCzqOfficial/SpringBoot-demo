@@ -15,4 +15,6 @@ public interface StockDataService {
     List<String> getNews(String name);
     Price getPrice(String name);
     List<String> getTop();
+    List<String> getDetail(String code);
+    List<String> LSTM(String code);
 }

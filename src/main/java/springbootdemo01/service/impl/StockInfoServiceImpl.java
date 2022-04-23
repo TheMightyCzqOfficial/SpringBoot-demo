@@ -95,4 +95,6 @@ public class StockInfoServiceImpl  implements StockInfoService {
         }
         return stockInfoMapper.selectPage(page,qw);
     }
+
+
 }

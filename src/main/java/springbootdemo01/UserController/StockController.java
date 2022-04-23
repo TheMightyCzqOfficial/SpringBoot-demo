@@ -1,14 +1,11 @@
 package springbootdemo01.UserController;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.core.task.support.ExecutorServiceAdapter;
 import org.springframework.web.bind.annotation.*;
-import springbootdemo01.Springbootdemo01Application;
-import springbootdemo01.domain.MyDataSource;
+import springbootdemo01.dao.StockInfoMapper;
 import springbootdemo01.entity.News;
 import springbootdemo01.entity.Price;
 import springbootdemo01.entity.StockInfo;
@@ -18,18 +15,21 @@ import springbootdemo01.service.StockInfoService;
 import springbootdemo01.utils.R;
 
 import java.io.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @RestController//@ResponseBody+@Controller
 @RequestMapping(value = "/stock")
 public class StockController {
+    @Autowired
+    StockInfoMapper stockInfoMapper;
     @Autowired
     StockInfoService service;
     @Autowired
@@ -136,6 +136,7 @@ public class StockController {
     public R getTop() throws ParseException {
         List<Top> topList=new ArrayList<>();
         List<String> list = dataService.getTop();
+        System.out.println(list.size());
         for(int i=0;i<list.size();i+=5){
             Top top= new Top(list.get(i), list.get(i + 1), list.get(i + 2), list.get(i + 3), list.get(i + 4));
             topList.add(top);
@@ -238,5 +239,62 @@ public class StockController {
 
 
     }
-
+    @GetMapping("/getLowAndHigh")
+    public R getStockByChange(){
+        List<StockInfo> high = stockInfoMapper.getHigh();
+        List<StockInfo> low = stockInfoMapper.getLow();
+        List<StockInfo> morenka = stockInfoMapper.getMorenka();
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("morenka",morenka);
+        jsonObject.put("high",high);
+        jsonObject.put("low",low);
+        R r=new R(true,jsonObject);
+        return r;
+    }
+    @GetMapping("/detail/{code}")
+    public R getDetail(@PathVariable String code){
+        JSONObject jsonObject=new JSONObject();
+        List<String> detail = dataService.getDetail(code);
+        String s1 = detail.get(0);
+        jsonObject.put("detail",s1);
+        String s2 = detail.get(1);
+        jsonObject.put("suggestion",s2);
+        return new R(true,jsonObject);
+    }
+    @GetMapping("/predict/{code}")
+    public R predict(@PathVariable String code){
+        JSONObject jsonObject=new JSONObject();
+        List<String> detail = dataService.LSTM(code);
+        ArrayList<String> strList=null;
+        try {
+            ArrayList<String> arrList = new ArrayList<>();
+            strList = new ArrayList<String>();
+            BufferedReader reader = new BufferedReader(new FileReader("D:\\kline\\predict.csv"));
+            String line=null;
+            while ((line = reader.readLine()) != null) {
+//                System.out.println(Arrays.asList(reader.getValues()));
+                arrList.add(line); // 按行读取，并把每一行的数据添加到list集合
+            }
+            reader.close();
+            System.out.println("读取的行数：" + arrList.size());
+            System.out.println(arrList);
+            Double price =Double.parseDouble(String.valueOf(arrList.get(arrList.size() - 1))) ;
+            DecimalFormat df = new DecimalFormat("0.00");
+            df.setRoundingMode(RoundingMode.HALF_UP);
+            jsonObject.put("price",df.format(price));
+            Double prePrice =Double.parseDouble(String.valueOf(arrList.get(arrList.size() - 1))) ;
+            if (prePrice-price>0){
+                jsonObject.put("zoushi","下跌");
+            }else {
+                jsonObject.put("zoushi","上涨");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String s1 = detail.get(0);
+        jsonObject.put("rmse",s1);
+        String s2 = detail.get(1);
+        jsonObject.put("suggestion",s2);
+        return new R(true,jsonObject);
+    }
 }

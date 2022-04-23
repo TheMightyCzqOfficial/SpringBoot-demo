@@ -221,7 +221,7 @@ public class StockDataServiceImpl implements StockDataService {
 
     @Override
     public Price getPrice(String name) {
-
+        System.out.println("------------------"+name);
         List<String> list=new ArrayList<>();
         Process proc;
         try {
@@ -259,6 +259,67 @@ public class StockDataServiceImpl implements StockDataService {
         try {
             String[] args1 = new String[] { pythonPath,
                     pyPath+"\\get_top.py"
+            };//python.exe处为你系统中python的安装位置；python.py为想要执行的python文件位置；test为想要传的参数
+            //proc = Runtime.getRuntime().exec("python.exe python.py ");// 执行py文件 不传参数
+            proc=Runtime.getRuntime().exec(args1);
+
+            //用输入输出流来截取结果
+            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream(), "GBK"));
+
+            String line=null;
+            while ((line = in.readLine()) != null) {
+
+                list.add(line);
+            }
+            in.close();
+            proc.waitFor();
+            System.out.println(list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> getDetail(String code) {
+
+        List<String> list=new ArrayList<>();
+        Process proc;
+        try {
+            String[] args1 = new String[] { pythonPath,
+                    pyPath+"\\get_detail.py",code
+            };//python.exe处为你系统中python的安装位置；python.py为想要执行的python文件位置；test为想要传的参数
+            //proc = Runtime.getRuntime().exec("python.exe python.py ");// 执行py文件 不传参数
+            proc=Runtime.getRuntime().exec(args1);
+
+            //用输入输出流来截取结果
+            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream(), "GBK"));
+
+            String line=null;
+            while ((line = in.readLine()) != null) {
+
+                list.add(line);
+            }
+            in.close();
+            proc.waitFor();
+            System.out.println(list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> LSTM(String code) {
+        List<String> list=new ArrayList<>();
+        Process proc;
+        try {
+            String[] args1 = new String[] { pythonPath,
+                    pyPath+"\\LSTM.py",code
             };//python.exe处为你系统中python的安装位置；python.py为想要执行的python文件位置；test为想要传的参数
             //proc = Runtime.getRuntime().exec("python.exe python.py ");// 执行py文件 不传参数
             proc=Runtime.getRuntime().exec(args1);

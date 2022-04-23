@@ -9,6 +9,7 @@ public class StockInfo {
     private String name;
     private String area;
     private String type;
+    private String pchange;
 
     public String getCode() {
         return code;
@@ -42,13 +43,22 @@ public class StockInfo {
         this.type = type;
     }
 
+    public String getPchange() {
+        return pchange;
+    }
+
+    public void setPchange(String pchange) {
+        this.pchange = pchange;
+    }
+
     @Override
     public String toString() {
         return "StockInfo{" +
-                ", code='" + code + '\'' +
+                "code='" + code + '\'' +
                 ", name='" + name + '\'' +
                 ", area='" + area + '\'' +
                 ", type='" + type + '\'' +
+                ", pchange='" + pchange + '\'' +
                 '}';
     }
 }
